@@ -2,7 +2,7 @@
 // https://github.com/bvda/swabe-01/blob/main/examples/lesson-03/authentication/src/router/authentication.router.ts
 
 import { Router, json } from 'express'
-import { listUsers, viewUser, createUser, getToken } from '../controllers/authentication_controller'
+import { listUsers, viewUser, createUser, getToken } from '../controllers/user_controller'
 
 const router = Router()
 router.use(json())
