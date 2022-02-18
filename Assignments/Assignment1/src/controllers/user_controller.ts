@@ -10,6 +10,8 @@ import { Name, userSchema } from '../models/user'
 const PUBLIC_KEY_PATH = join(__dirname,'..','..','public','auth-rsa256.key.pub')
 const PRIVATE_KEY_PATH = join(__dirname,'..','..','private','auth-rsa256.key')
 
+const X5U = 'http://localhost:3000/auth-rsa256.key.pub'
+
 const usersConnection = mongoose.createConnection('mongodb://localhost:27017/assignment1-users')
 const UserModel = usersConnection.model('User', userSchema)
 
@@ -25,7 +27,28 @@ export const getToken = async (req: Request, res: Response) => {
                 if(err) {
                     res.sendStatus(500)
                 } else {
-                    
+                    const rights = user.accessRights
+                    if(rights === 'manager' || rights === 'clerk') {
+                        sign({email, accessRights: rights}, privateKey, {expiresIn: '1h', header: {alg: 'RS256', x5u: X5U}}, (err, token) => {
+                            if(err) {
+                                res.status(500).json({
+                                    message: err.message
+                                })
+                            } else {
+                                res.json({token})
+                            }
+                        })
+                    } else {
+                        sign({email, accessRights: 'guest'}, privateKey, {expiresIn: '1h', header: {alg: 'RS256', x5u: X5U}}, (err, token) => {
+                            if(err) {
+                                res.status(500).json({
+                                    message: err.message
+                                })
+                            } else {
+                                res.json({token})
+                            }
+                        }) 
+                    }
                 }
 
             })

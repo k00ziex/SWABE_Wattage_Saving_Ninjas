@@ -51,3 +51,4 @@ export const userSchema = new Schema<User>({
   email: { type: String, required: true },
   accessRights: {type: String, required: true}
 })
+
