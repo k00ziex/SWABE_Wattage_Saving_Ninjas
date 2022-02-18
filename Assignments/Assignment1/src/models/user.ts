@@ -8,6 +8,7 @@ export interface User {
   name: Name
   password: Password
   email: string
+  accessRights: String
 }
 
 export interface Name {
@@ -47,5 +48,6 @@ PasswordSchema.methods.setPassword = function(hash: string, salt: string) {
 export const userSchema = new Schema<User>({
   name: { type: NameSchema, required: true }, 
   password: { type: PasswordSchema, required: true },
-  email: { type: String, required: true }
+  email: { type: String, required: true },
+  accessRights: {type: String, required: true}
 })
