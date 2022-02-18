@@ -7,12 +7,30 @@ import mongoose from 'mongoose'
 import { randomBytes, pbkdf2, SALT_LENGTH, DIGEST, ITERATIONS, KEY_LENGTH, ROUNDS } from '../utils/auth-crypto'
 import { Name, userSchema } from '../models/user'
 
+const PUBLIC_KEY_PATH = join(__dirname,'..','..','public','auth-rsa256.key.pub')
+const PRIVATE_KEY_PATH = join(__dirname,'..','..','private','auth-rsa256.key')
+
 const usersConnection = mongoose.createConnection('mongodb://localhost:27017/assignment1-users')
 const UserModel = usersConnection.model('User', userSchema)
 
 
 export const getToken = async (req: Request, res: Response) => {
+    
+    const {email, password} = req.body
+    let user = await UserModel.findOne({email}).exec()
+    
+    if(user) {
+        if(await user.methods.isPasswordValid(password)) {
+            readFile(PRIVATE_KEY_PATH, (err, privateKey) => {
+                if(err) {
+                    res.sendStatus(500)
+                } else {
+                    
+                }
 
+            })
+        }
+    }
 }
 
 export const listUsers = async (req: Request, res: Response) => {  
