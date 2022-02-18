@@ -1,5 +1,6 @@
 import { readFile } from 'fs'
 import { join } from 'path'
+import {sign, verify} from 'jsonwebtoken'
 import { Request, Response } from 'express'
 import mongoose from 'mongoose'
 
