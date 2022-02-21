@@ -1,4 +1,4 @@
 au501708 Simon Zacher Høholt Jensen
 au590761 Andreas Vorgaard
-
-**INSERT NAME AND AU ID**
+au589973 Tobias Sandø Lund
+au592332 Thomas Niels Berthelsen
