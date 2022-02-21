@@ -8,7 +8,7 @@ const router = Router()
 router.use(json())
 
 router.get('/users', listUsers)
-router.get('/users/{:uid}', viewUser)
+router.get('/users/:uid', viewUser)
 router.post('/user', createUser)
 router.post('/login', getToken)
 
