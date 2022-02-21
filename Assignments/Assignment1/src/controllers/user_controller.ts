@@ -10,9 +10,9 @@ import { Name, userSchema } from '../models/user'
 const PUBLIC_KEY_PATH = join(__dirname,'..','..','src','keys','public','auth-rsa256.key.pub')
 const PRIVATE_KEY_PATH = join(__dirname,'..','..','src','keys','private','auth-rsa256.key')
 
-const X5U = 'http://localhost:3000/auth-rsa256.key.pub'
+const X5U = 'http://localhost:3000/auth-rsa256.key.pub' // Tobias 
 
-const usersConnection = mongoose.createConnection('mongodb://localhost:27017/assignment1-users')
+const usersConnection = mongoose.createConnection('mongodb://localhost:27017/assignment1-users') // Tobias
 const UserModel = usersConnection.model('User', userSchema)
 
 
