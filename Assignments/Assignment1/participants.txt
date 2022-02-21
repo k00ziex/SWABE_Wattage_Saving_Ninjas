@@ -1,3 +1,6 @@
-au501708 Simon Zacher Høholt Jensen
-au590761 Andreas Vorgaard
-au589973 Tobias Sandø Lund
+au501708 Simon Zacher Høholt Jensen,
+au590761 Andreas Vorgaard,
+au589973 Tobias Sandø Lund,
+au592332 Thomas Niels Berthelsen
+
+Message Hash: 91d763c4c93ea751e41a046c360afb21
