@@ -11,7 +11,7 @@ export interface Room {
   }
 
 export const RoomSchema = new Schema<Room>({
-    roomNumber: { type: Number, required: true },
+    roomNumber: { type: Number, required: true, unique: true },
     available: {type: Boolean, required: true},
     bedInformation: {type: String, required: true},
     floorNumber: {type: Number},
