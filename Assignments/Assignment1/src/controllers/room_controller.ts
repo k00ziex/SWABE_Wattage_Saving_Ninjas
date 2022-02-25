@@ -2,9 +2,9 @@ import { readFile } from 'fs'
 import { join } from 'path'
 import {sign, verify} from 'jsonwebtoken'
 import { Request, Response } from 'express'
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
 
-import { RoomSchema } from '../models/room'
+import { RoomSchema, Room } from '../models/room'
 
 /******************************************************************************************************************/
 /* Should be in some central file instead of copy */
@@ -13,13 +13,15 @@ import { randomBytes, pbkdf2, SALT_LENGTH, DIGEST, ITERATIONS, KEY_LENGTH, ROUND
 const PUBLIC_KEY_PATH = join(__dirname,'..','..','public','auth-rsa256.key.pub')
 const PRIVATE_KEY_PATH = join(__dirname,'..','..','private','auth-rsa256.key')
 
-const X5U = 'http://localhost:3000/auth-rsa256.key.pub' // Tobias 
+const X5U = 'http://127.0.0.1:3000/auth-rsa256.key.pub' // Tobias 
 /******************************************************************************************************************/
-const roomCon = mongoose.createConnection('mongodb://localhost:27017/assignment1-users') // Tobias
+const roomCon = mongoose.createConnection('mongodb://127.0.0.1:27017/assignment1-users') // Tobias
 const RoomModel = roomCon.model('Room', RoomSchema)
 
+// TODO: Role authorization
+
 // GET /rooms–list all rooms. Accessible for roles manager, clerk, and guest. It should be possible to filter based on availability
-const listRooms = async (req: Request, res: Response) => {
+export const listRooms = async (req: Request, res: Response) => {
     try {
         const { available } = req.query;
         
@@ -33,39 +35,45 @@ const listRooms = async (req: Request, res: Response) => {
         let result = await RoomModel.find(filter, { __v: 0 }).lean();
         res.json(result);
     } catch(error){
-        printError(error);
+        returnError(error, res);
     }
 };
 
 // GET /rooms/{:uid}–view room details. Accessible for roles manager, clerk, amd guest
-const getRoom = async(req: Request, res: Response) => {
+export const getRoom = async(req: Request, res: Response) => {
     try{
         const {uid} = req.params;
-        let filter = { _id: uid }; // Filter on mongo id
+        console.debug("Getting room with uid:\n" + uid)
+        let filter = {_id: uid}; 
 
         let result = await RoomModel.find(filter, { __v: 0 }).exec();
+        res.json(result);
     } catch(error){
-        printError(error);
+        returnError(error, res);
     }
 };
 
-// POST /reservations/{:uid}–create reservation. Accessible for roles manager, clerk, and guest
-const createRoom = async(req: Request, res: Response) => {
+// POST /rooms/{:uid}–create room. Accessible for roles manager
+export const createRoom = async(req: Request, res: Response) => {
     try{
-        const room = req.body;
+        const {uid} = req.params; // Ignore since mongo will create this for us? TODO: Can set if present.
+        let room = req.body;
+        
         console.debug("Creating room:\n" + room);
 
         let {id} = await new RoomModel(room).save();
+        res.json({"Created":{"uid": id, "Created": room}});
 
-        res.json(id); // TODO better msg?
-    }
+
+
+}
     catch(error){
-        printError(error);
+        returnError(error, res);
     }
 }
 
-// PATCH /reservations/{:uid}—modify reservation. Accessible for roles manager, clerk, and guest (if created by guest)
-const modifyRoom = async(req: Request, res: Response) => {
+// PATCH /rooms/{:uid}–modify room. Accessible for roles manager, clerk
+export const modifyRoom = async(req: Request, res: Response) => {
     try{
         const {uid} = req.params;
         const newRoom = req.body;
@@ -75,13 +83,13 @@ const modifyRoom = async(req: Request, res: Response) => {
         res.json({uid, modifiedRoom});
     }
     catch(error){
-        printError(error);
+        returnError(error, res);
     }
 }
 
 
-// DELETE /reservations/{:uid}–delete reservation. Accessible for roles manager, clerk
-const deleteRoom = async(req: Request, res: Response) => {
+// DELETE /rooms/{:uid}–delete room. Accessible for roles manager
+export const deleteRoom = async(req: Request, res: Response) => {
     try{
         const {uid} = req.params;
         console.debug("Removing room with uid: " + uid);
@@ -91,13 +99,15 @@ const deleteRoom = async(req: Request, res: Response) => {
         res.json(result);
     }
     catch(error){
-        printError(error);
+        returnError(error, res);
     }
 }
 
 /**
- * @param error Prints error as console.error with a standard pre-text. 
+ * @param error Prints error as console.error with a standard pre-text and returns.
  */
-function printError(error: any){
+function returnError(error: any, res: Response){
     console.error("Error caught\n" + error);
+    res.status(500);
+    res.send("Something went wrong...\n" + error);
 }
