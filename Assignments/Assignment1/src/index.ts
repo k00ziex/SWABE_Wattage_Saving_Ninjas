@@ -4,7 +4,7 @@ import { join } from 'path'
 import { AuthenticationRouter } from './routers/user_router'
 import { RoomRouter } from './routers/room_router'
 import { DataseedingRouter } from './routers/seeding_router'
-import { decode, verify} from 'jsonwebtoken'
+import { decode, verify, JwtPayload, Jwt} from 'jsonwebtoken'
 
 const PUBLIC_KEY_PATH = join(__dirname,'..','..','Assignment1','src','keys','public','auth-rsa256.key.pub')
 const app = express()
@@ -26,18 +26,18 @@ app.use((req, res, next) => {
       } else {
         verify(token, publicKey, { complete: true }, (err, decoded) => {
           if(err) {
-            res.status(400).json({
+            res.status(401).json({
               message: err.message
             })
           } else {
-            req.body.rights = decoded.payload["accessRights"]
-            next()
+              req.body.rights = decoded.payload["accessRights"]
+              next()
           }
         })
       }
     })
   }
-})
+});
 
 app.use('', RoomRouter)
 

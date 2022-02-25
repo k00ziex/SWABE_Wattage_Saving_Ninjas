@@ -19,11 +19,17 @@ const roomCon = mongoose.createConnection('mongodb://127.0.0.1:27017/assignment1
 const RoomModel = roomCon.model('Room', RoomSchema)
 
 // TODO: Role authorization
+function getRoles(req: Request){
+    return req.body.rights;
+}
 
 // GET /rooms–list all rooms. Accessible for roles manager, clerk, and guest. It should be possible to filter based on availability
 export const listRooms = async (req: Request, res: Response) => {
     try {
+        var roles = getRoles(req);
+        console.log("Roles are: " + roles);
         const { available } = req.query;
+        
         
         let filter = { }; 
 
