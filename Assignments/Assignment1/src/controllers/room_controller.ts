@@ -6,31 +6,22 @@ import mongoose, { mongo } from 'mongoose'
 
 import { RoomSchema, Room } from '../models/room'
 
-/******************************************************************************************************************/
-/* Should be in some central file instead of copy */
-import { randomBytes, pbkdf2, SALT_LENGTH, DIGEST, ITERATIONS, KEY_LENGTH, ROUNDS } from '../utils/auth-crypto'
+import { isClerk, isGuest, isManager } from "../utils/role-check"
 
-const PUBLIC_KEY_PATH = join(__dirname,'..','..','public','auth-rsa256.key.pub')
-const PRIVATE_KEY_PATH = join(__dirname,'..','..','private','auth-rsa256.key')
-
-const X5U = 'http://127.0.0.1:3000/auth-rsa256.key.pub' // Tobias 
-/******************************************************************************************************************/
 const roomCon = mongoose.createConnection('mongodb://127.0.0.1:27017/assignment1-users') // Tobias
 const RoomModel = roomCon.model('Room', RoomSchema)
 
-// TODO: Role authorization
-function getRoles(req: Request){
-    return req.body.rights;
-}
 
 // GET /rooms–list all rooms. Accessible for roles manager, clerk, and guest. It should be possible to filter based on availability
 export const listRooms = async (req: Request, res: Response) => {
     try {
-        var roles = getRoles(req);
-        console.log("Roles are: " + roles);
+        if(!isManager(req) && !isClerk(req) && !isGuest(req)){
+            console.log("No rights")
+            res.sendStatus(401);
+            return;
+        }
+        
         const { available } = req.query;
-        
-        
         let filter = { }; 
 
         // Filter on availability
@@ -48,6 +39,11 @@ export const listRooms = async (req: Request, res: Response) => {
 // GET /rooms/{:uid}–view room details. Accessible for roles manager, clerk, amd guest
 export const getRoom = async(req: Request, res: Response) => {
     try{
+        if(!isManager(req) && !isClerk(req) && !isGuest(req)){
+            res.sendStatus(401);
+            return;
+        }
+
         const {uid} = req.params;
         console.debug("Getting room with uid:\n" + uid)
         let filter = {_id: uid}; 
@@ -62,6 +58,10 @@ export const getRoom = async(req: Request, res: Response) => {
 // POST /rooms/{:uid}–create room. Accessible for roles manager
 export const createRoom = async(req: Request, res: Response) => {
     try{
+        if(!isManager(req)){
+            res.sendStatus(401);
+            return;
+        }
         const {uid} = req.params; // Ignore since mongo will create this for us? TODO: Can set if present.
         let room = req.body;
         
@@ -69,9 +69,6 @@ export const createRoom = async(req: Request, res: Response) => {
 
         let {id} = await new RoomModel(room).save();
         res.json({"Created":{"uid": id, "Created": room}});
-
-
-
 }
     catch(error){
         returnError(error, res);
@@ -81,6 +78,10 @@ export const createRoom = async(req: Request, res: Response) => {
 // PATCH /rooms/{:uid}–modify room. Accessible for roles manager, clerk
 export const modifyRoom = async(req: Request, res: Response) => {
     try{
+        if(!isManager(req) && !isClerk(req)){
+            res.sendStatus(401);
+            return;
+        }
         const {uid} = req.params;
         const newRoom = req.body;
         let filter = {_id: uid, }
@@ -93,10 +94,13 @@ export const modifyRoom = async(req: Request, res: Response) => {
     }
 }
 
-
 // DELETE /rooms/{:uid}–delete room. Accessible for roles manager
 export const deleteRoom = async(req: Request, res: Response) => {
     try{
+        if(!isManager(req)){
+            res.sendStatus(401);
+            return;
+        }
         const {uid} = req.params;
         console.debug("Removing room with uid: " + uid);
 
@@ -116,4 +120,5 @@ function returnError(error: any, res: Response){
     console.error("Error caught\n" + error);
     res.status(500);
     res.send("Something went wrong...\n" + error);
+    return;
 }
