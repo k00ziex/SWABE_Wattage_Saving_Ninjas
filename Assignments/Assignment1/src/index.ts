@@ -12,12 +12,16 @@ const port = 3000
 
 app.use(express.static('public'))
 
+app.use( (req, res, next) => {
+  console.log("\nReceived request: " + req.method + " on " + req.url);
+  next();
+});
+
 app.use('', AuthenticationRouter)
 app.use('', DataseedingRouter)
 
 app.use((req, res, next) => {
   const token = req.get('authorization')?.split(' ')[1]
-  console.log(token)
   if(token) {
     readFile(PUBLIC_KEY_PATH, (err, publicKey) => {
       if(err) {
@@ -31,6 +35,7 @@ app.use((req, res, next) => {
             })
           } else {
               req.body.rights = decoded.payload["accessRights"]
+              console.log("Rights: " + req.body.rights);
               next()
           }
         })
