@@ -28,7 +28,8 @@ export const getToken = async (req: Request, res: Response) => {
                     res.sendStatus(500)
                 } else {
                     const rights = user.accessRights
-                    if(rights.toLowerCase() === 'manager' || rights.toLowerCase() === 'clerk') {
+                    
+                    if(rights === 'manager' || rights === 'clerk') {
                         sign({email, accessRights: rights}, privateKey, {expiresIn: '1h', header: {alg: 'RS256', x5u: X5U}}, (err, token) => {
                             if(err) {
                                 res.status(500).json({
