@@ -38,7 +38,10 @@ app.use((req, res, next) => {
             })
           } else {
               var payload = decoded?.payload as JwtPayload
-              if(payload == null) { throw new Error("Øv")} // Fix this
+              if(payload == null) { 
+                res.sendStatus(401);
+                return;
+              } 
               req.body.rights = payload["accessRights"]
               console.log("Rights: " + req.body.rights);
               next()
