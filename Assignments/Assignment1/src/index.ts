@@ -49,6 +49,8 @@ app.use((req, res, next) => {
         })
       }
     })
+  }else{
+    res.status(404).send('No token buddy')
   }
 });
 

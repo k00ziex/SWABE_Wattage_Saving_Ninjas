@@ -4,10 +4,10 @@ import { listReservations, viewReservation, createReservation, modifyReservation
 const router = Router()
 router.use(json())
 
-router.get('/rooms', listReservations);
-router.get('/rooms/:uid', viewReservation);
-router.post('/rooms/:uid?', createReservation);
-router.patch('/rooms/:uid', modifyReservation);
-router.delete('/rooms/:uid', deleteReservation);
+router.get('/reservation', listReservations);
+router.get('/reservation/:uid', viewReservation);
+router.post('/reservation/:uid?', createReservation);
+router.patch('/reservation/:uid', modifyReservation);
+router.delete('/reservation/:uid', deleteReservation);
 
 export { router as ReservationRouter }

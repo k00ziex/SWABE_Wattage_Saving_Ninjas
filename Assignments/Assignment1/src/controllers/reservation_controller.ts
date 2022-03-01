@@ -13,7 +13,6 @@ const reservationCon = mongoose.createConnection('mongodb://127.0.0.1:27017/assi
 const ReservationModel = reservationCon.model('Reservation', ReservationSchema)
 
 
-// GET /rooms–list all rooms. Accessible for roles manager, clerk, and guest. It should be possible to filter based on availability
 export const listReservations = async (req: Request, res: Response) => {
     try {
         if(!isManager(req) && !isClerk(req) && !isGuest(req)){
@@ -38,7 +37,6 @@ export const listReservations = async (req: Request, res: Response) => {
 
 };
 
-// GET /rooms/{:uid}–view room details. Accessible for roles manager, clerk, amd guest
 export const viewReservation = async(req: Request, res: Response) => {
     try{
         if(!isManager(req) && !isClerk(req) && !isGuest(req)){
@@ -58,7 +56,6 @@ export const viewReservation = async(req: Request, res: Response) => {
 
 };
 
-// POST /rooms/{:uid}–create room. Accessible for roles manager
 export const createReservation = async(req: Request, res: Response) => {
     try{
         if(!isManager(req)){
@@ -79,7 +76,6 @@ export const createReservation = async(req: Request, res: Response) => {
 
 }
 
-// PATCH /rooms/{:uid}–modify room. Accessible for roles manager, clerk
 export const modifyReservation = async(req: Request, res: Response) => {
     try{
         if(!isManager(req) && !isClerk(req)){
@@ -98,7 +94,6 @@ export const modifyReservation = async(req: Request, res: Response) => {
     }
 }
 
-// DELETE /rooms/{:uid}–delete room. Accessible for roles manager
 export const deleteReservation = async(req: Request, res: Response) => {
     try{
         if(!isManager(req)){
