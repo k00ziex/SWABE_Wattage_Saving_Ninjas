@@ -5,6 +5,9 @@ import { AuthenticationRouter } from './routers/user_router'
 import { RoomRouter } from './routers/room_router'
 import { DataseedingRouter } from './routers/seeding_router'
 import { decode, verify, JwtPayload, Jwt} from 'jsonwebtoken'
+import { ReservationRouter } from './routers/reservation_router'
+
+
 
 const PUBLIC_KEY_PATH = join(__dirname,'..','..','Assignment1','src','keys','public','auth-rsa256.key.pub')
 const app = express()
@@ -18,6 +21,7 @@ app.use( (req, res, next) => {
 });
 
 app.use('', AuthenticationRouter)
+app.use('', ReservationRouter)
 app.use('', DataseedingRouter)
 
 app.use((req, res, next) => {
