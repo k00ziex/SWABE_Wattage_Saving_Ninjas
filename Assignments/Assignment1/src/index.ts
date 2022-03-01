@@ -38,7 +38,9 @@ app.use((req, res, next) => {
               message: err.message
             })
           } else {
-              req.body.rights = decoded.payload["accessRights"]
+              var payload = decoded?.payload as JwtPayload
+              if(payload == null) { throw new Error("Øv")} // Fix this
+              req.body.rights = payload["accessRights"]
               console.log("Rights: " + req.body.rights);
               next()
           }
