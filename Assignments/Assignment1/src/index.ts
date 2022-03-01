@@ -21,7 +21,6 @@ app.use( (req, res, next) => {
 });
 
 app.use('', AuthenticationRouter)
-app.use('', ReservationRouter)
 app.use('', DataseedingRouter)
 
 app.use((req, res, next) => {
@@ -51,6 +50,7 @@ app.use((req, res, next) => {
 });
 
 app.use('', RoomRouter)
+app.use('', ReservationRouter)
 
 
 app.get('/protected', (req, res) => {
