@@ -1,10 +1,8 @@
-import { readFile } from 'fs'
-import { join } from 'path'
-import {sign, verify} from 'jsonwebtoken'
-import { Request, Response } from 'express'
-import mongoose, { mongo } from 'mongoose'
 
-import { RoomSchema, Room } from '../models/room'
+import { Request, Response } from 'express'
+import mongoose from 'mongoose'
+
+import { RoomSchema } from '../models/room'
 
 import { isClerk, isGuest, isManager } from "../utils/role-check"
 
@@ -62,8 +60,13 @@ export const createRoom = async(req: Request, res: Response) => {
             res.sendStatus(401);
             return;
         }
-        const {uid} = req.params; // Ignore since mongo will create this for us? TODO: Can set if present.
+        const {uid} = req.params; 
         let room = req.body;
+        
+        // Set uid if specified by user
+        if(uid != null){
+            room._id = new mongoose.mongo.ObjectId(uid);
+        }
         
         console.debug("Creating room:\n" + room);
 
