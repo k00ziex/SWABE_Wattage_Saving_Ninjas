@@ -30,15 +30,12 @@ export const listReservations = async (req: Request, res: Response) => {
         // From
         if(from && !to){
             result = await ReservationModel.find({fromDate: from})
-            return res.json(result);   
         }
         else if (!from && to){
-            result = await ReservationModel.find({toDate: to})
-            return res.json(result);   
+            result = await ReservationModel.find({toDate: to}) 
         }
         else if(to && from){
             result = await ReservationModel.find({fromDate: from, toDate: to})
-            return res.json(result);   
         }else{
             result = await ReservationModel.find({})
         }
@@ -78,7 +75,7 @@ export const createReservation = async(req: Request, res: Response) => {
         const {uid} = req.params; // Ignore since mongo will create this for us? TODO: Can set if present.
         let filter = {_id: uid, }
 
-        // Check if room is already reserved
+        // Check if reservation is already reserved
         let roomReservation = await ReservationModel.findOne(filter) as Reservation
         
         if(roomReservation != null){
@@ -86,6 +83,10 @@ export const createReservation = async(req: Request, res: Response) => {
         }
 
         let reservation = req.body;
+
+        if(uid != null){
+            reservation._id = new mongoose.mongo.ObjectId(uid);
+        }
         
         console.debug("Creating reservation:\n" + reservation);
 
@@ -138,7 +139,7 @@ export const modifyReservation = async(req: Request, res: Response) => {
 
         let filter = {_id: uid }
         console.debug("Modifying room to have details:\n" + newReservation);
-        let modifiedReservation = ReservationModel.updateOne(filter, newReservation).exec(); // TODO: Might need to specify what properties to overwrite.
+        let modifiedReservation = await ReservationModel.updateOne(filter, newReservation).exec(); // TODO: Might need to specify what properties to overwrite.
         res.json({uid, newReservation});
     }
     catch(error){
