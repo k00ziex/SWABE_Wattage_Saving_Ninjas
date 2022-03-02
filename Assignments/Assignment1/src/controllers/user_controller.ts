@@ -88,6 +88,7 @@ export const viewUser = async (req: Request, res: Response) => {
 
 // Helper methods
 const userExists = (email: string) => UserModel.findOne({ email }).exec()
+export const findUserByEmail = (email: string) => UserModel.findOne({ email }).exec()
 
 const newUser = (email: string, name: Name, accessRights: string) => new UserModel({ 
     email, 

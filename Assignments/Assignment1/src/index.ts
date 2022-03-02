@@ -50,7 +50,7 @@ app.use((req, res, next) => {
       }
     })
   }else{
-    res.status(404).send('No token buddy')
+    res.status(400).send("Get a token mate")
   }
 });
 

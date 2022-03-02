@@ -7,7 +7,9 @@ import mongoose, { mongo } from 'mongoose'
 import { RoomSchema, Room } from '../models/room'
 
 import { isClerk, isGuest, isManager } from "../utils/role-check"
-import { ReservationSchema } from '../models/reservation'
+import { Reservation, ReservationSchema } from '../models/reservation'
+import { getRoleFromJwt } from '../utils/jwt-helper'
+import { findUserByEmail } from './user_controller'
 
 const reservationCon = mongoose.createConnection('mongodb://127.0.0.1:27017/assignment1-users') // Thomas
 const ReservationModel = reservationCon.model('Reservation', ReservationSchema)
@@ -15,22 +17,32 @@ const ReservationModel = reservationCon.model('Reservation', ReservationSchema)
 
 export const listReservations = async (req: Request, res: Response) => {
     try {
-        if(!isManager(req) && !isClerk(req) && !isGuest(req)){
+        if(!isManager(req) && !isClerk(req)){
             console.log("No rights")
             res.sendStatus(401);
             return;
         }
         
-        const { available } = req.query;
-        let filter = { }; 
+        const { to, from } = req.query;
 
-        // Filter on availability
-        if(available){
-            filter = {...filter, available} 
+
+        var result;
+        // From
+        if(from && !to){
+            result = await ReservationModel.find({fromDate: from})
+            return res.json(result);   
         }
-    
-        let result = await ReservationModel.find(filter, { __v: 0 }).lean();
-        res.json(result);
+        else if (!from && to){
+            result = await ReservationModel.find({toDate: to})
+            return res.json(result);   
+        }
+        else if(to && from){
+            result = await ReservationModel.find({fromDate: from, toDate: to})
+            return res.json(result);   
+        }else{
+            result = await ReservationModel.find({})
+        }
+        return res.json(result)
     } catch(error){
         returnError(error, res);
     }
@@ -58,11 +70,21 @@ export const viewReservation = async(req: Request, res: Response) => {
 
 export const createReservation = async(req: Request, res: Response) => {
     try{
-        if(!isManager(req)){
+        if(!isManager(req) && !isClerk(req) && !isGuest(req)){
             res.sendStatus(401);
             return;
         }
+        console.log(req.params)
         const {uid} = req.params; // Ignore since mongo will create this for us? TODO: Can set if present.
+        let filter = {_id: uid, }
+
+        // Check if room is already reserved
+        let roomReservation = await ReservationModel.findOne(filter) as Reservation
+        
+        if(roomReservation != null){
+            return res.status(400).send("A reservation already exist with id: " + uid)
+        }
+
         let reservation = req.body;
         
         console.debug("Creating reservation:\n" + reservation);
@@ -78,16 +100,46 @@ export const createReservation = async(req: Request, res: Response) => {
 
 export const modifyReservation = async(req: Request, res: Response) => {
     try{
-        if(!isManager(req) && !isClerk(req)){
+        if(!isManager(req) && !isClerk(req) && !isGuest(req)){
+            console.log('123')
             res.sendStatus(401);
             return;
         }
+
         const {uid} = req.params;
-        const newRoom = req.body;
-        let filter = {_id: uid, }
-        console.debug("Modifying room to have details:\n" + newRoom);
-        let modifiedReservation = ReservationModel.updateOne(filter, newRoom).exec(); // TODO: Might need to specify what properties to overwrite.
-        res.json({uid, modifiedReservation});
+
+        // Reservation creds
+        let filterinital = {_id: uid}; 
+
+        let findReservation = await ReservationModel.findOne({filterinital}, { __v: 0 }) as Reservation
+
+        let emailOfReservation = findReservation.emailOfReserver
+
+        let reservationAccessRights = await findUserByEmail(emailOfReservation.toString())
+        if(reservationAccessRights == null){
+            res.status(400).send("Email is not valid to a user")
+        }
+        let reservationaccessrights = reservationAccessRights['accessRights']
+
+
+        // JWT owner creds
+        let email = getRoleFromJwt(req);
+
+        // Verify role from database
+        let response = await findUserByEmail(email)
+
+        let jwtaccessrights = response['accessRights']
+
+        if(jwtaccessrights == "guest" && reservationaccessrights != "guest"){
+            res.status(400).send("Yo, you're not permitted to do this, you're just a " + jwtaccessrights)
+        }
+
+        const newReservation = req.body;
+
+        let filter = {_id: uid }
+        console.debug("Modifying room to have details:\n" + newReservation);
+        let modifiedReservation = ReservationModel.updateOne(filter, newReservation).exec(); // TODO: Might need to specify what properties to overwrite.
+        res.json({uid, newReservation});
     }
     catch(error){
         returnError(error, res);
@@ -96,16 +148,19 @@ export const modifyReservation = async(req: Request, res: Response) => {
 
 export const deleteReservation = async(req: Request, res: Response) => {
     try{
-        if(!isManager(req)){
+        if(!isManager(req) && !isClerk(req)){
             res.sendStatus(401);
             return;
         }
         const {uid} = req.params;
         console.debug("Removing room with uid: " + uid);
 
-        let result = ReservationModel.deleteOne({_id: uid}).exec();
+        let result = await ReservationModel.findOneAndDelete({_id: uid}).exec();
+        if(result == null){
+            return res.status(400).send("Could not find a reservation to delete with id: " + uid)
+        }
 
-        res.json(result);
+        res.json("Removing room with uid: " + uid);
     }
     catch(error){
         returnError(error, res);
