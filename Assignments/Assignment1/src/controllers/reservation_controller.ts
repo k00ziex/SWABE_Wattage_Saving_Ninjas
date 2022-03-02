@@ -82,6 +82,16 @@ export const createReservation = async(req: Request, res: Response) => {
             return res.status(400).send("A reservation already exist with id: " + uid)
         }
 
+        
+
+        let {roomNumber} = req.body
+
+        let roomReservationByRoomNumber = await ReservationModel.findOne({roomNumber: roomNumber}) as Reservation
+
+        if(roomReservationByRoomNumber != null){
+            return res.status(400).send("A reservation already exist with roomNumber: " + roomReservationByRoomNumber.roomNumber)
+        }
+
         let reservation = req.body;
 
         if(uid != null){
