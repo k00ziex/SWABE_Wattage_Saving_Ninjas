@@ -5,6 +5,20 @@ const pgApiWrapper = async () => {
     const pgQuery = (text, params = {}) =>
         pgPool.query(text, Object.values(params));
     return {
+        roomMainList: async () => {
+          const res = await pgQuery(`
+            SELECT  uid,  available, comment, floor,  hasowntub AS "hasOwnTub", roomnumber AS "roomNumber", 
+            bedamount AS "bedAmount", bedtype AS "bedType", roomserviceavailable AS "roomServiceAvailable", 
+            soundproof AS "soundProof"
+            
+            FROM rooms
+            LIMIT 100
+          `);
+          // res.rows.forEach(element => {
+          //   console.log(element);
+          // });
+          return res.rows;
+        },
         taskMainList: async () => {
             const pgResp = await pgQuery(`
                 SELECT id, content, tags, user_id AS "userId",

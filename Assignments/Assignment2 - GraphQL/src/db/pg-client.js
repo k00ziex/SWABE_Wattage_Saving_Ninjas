@@ -4,14 +4,14 @@ import { pgConnectionString } from '../config';
 
 export default async function pgClient() {
   const pgPool = new pg.Pool({
-    connectionString: pgConnectionString,
+    connectionString: "postgresql://postgres:somePassword@127.0.0.1:5432/assignment2",
   });
 
   // Test the connection
   const client = await pgPool.connect();
   const tableCountResp = await client.query(
     'select count(*) from information_schema.tables where table_schema = $1;',
-    ['azdev']
+    ['assignment2']
   );
   client.release();
 

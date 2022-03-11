@@ -12,6 +12,7 @@ import {
 const Room = new GraphQLObjectType({
     name: "Room",
     fields:{
+      uid: {type: new GraphQLNonNull(GraphQLString)},
       roomNumber: {type: new GraphQLNonNull(GraphQLInt)},
       available: {type: new GraphQLNonNull(GraphQLBoolean)},
       comment: {type: new GraphQLNonNull(GraphQLString)},
