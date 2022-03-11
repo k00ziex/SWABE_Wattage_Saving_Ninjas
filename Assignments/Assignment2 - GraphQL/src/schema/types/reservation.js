@@ -10,16 +10,12 @@ import {
     GraphQLList,
   } from 'graphql';
 
-  import {
-    DateTimeTypeDefinition
-  } from 'graphql-scalars'
-
   const Reservation = new GraphQLObjectType({
-    name: "Room",
+    name: "Reservation",
     fields:{
       reservationNumber: {type: new GraphQLNonNull(GraphQLInt)},
-      fromDate: {type: new GraphQLNonNull(DateTimeTypeDefinition)},
-      toDate: {type: new GraphQLNonNull(DateTimeTypeDefinition)},
+      fromDate: {type: new GraphQLNonNull(GraphQLString)},
+      toDate: {type: new GraphQLNonNull(GraphQLString)},
       nameOfReserver: {type: new GraphQLNonNull(GraphQLString)},
       emailOfReserver: {type: new GraphQLNonNull(GraphQLString)},
       commentsOfReserver: {type: new GraphQLNonNull(GraphQLString)},
