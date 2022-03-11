@@ -1,0 +1,14 @@
+CREATE TABLE Room
+(
+	uid VARCHAR(255) UNIQUE NOT NULL,
+	roomNumber INT UNIQUE NOT NULL,
+	available BOOLEAN NOT NULL,
+	comment VARCHAR(255) NOT NULL,
+	floor VARCHAR(50) NOT NULL,
+	bedAmount INT NOT NULL,
+	bedType VARCHAR(50) NOT NULL,
+	roomServiceAvailable BOOLEAN NOT NULL,
+	soundProof BOOLEAN NOT NULL,
+	hasOwnTub BOOLEAN NOT NULL
+	
+);
