@@ -1,4 +1,4 @@
-CREATE TABLE Room
+CREATE TABLE Rooms
 (
 	uid VARCHAR(255) UNIQUE NOT NULL,
 	roomNumber INT UNIQUE NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE Room
 );
 
 INSERT INTO 
-Room(uid, roomNumber, available, comment, floor, bedAmount, bedType, roomServiceAvailable, soundProof, hasOwnTub)
+Rooms(uid, roomNumber, available, comment, floor, bedAmount, bedType, roomServiceAvailable, soundProof, hasOwnTub)
 VALUES
 ('1', 420, TRUE, 'No dogs allowed', 'Ground Floor', 1, 'King', FALSE, TRUE, TRUE),
 ('2', 421, FALSE, 'Dogs allowed', 'Second Floor', 2, 'Normal', TRUE, FALSE, FALSE),
