@@ -14,8 +14,14 @@ import {
     name: "Reservation",
     fields:{
       reservationNumber: {type: new GraphQLNonNull(GraphQLInt)},
-      fromDate: {type: new GraphQLNonNull(GraphQLString)},
-      toDate: {type: new GraphQLNonNull(GraphQLString)},
+      fromDate: {
+        type: new GraphQLNonNull(GraphQLString),
+        resolve: (source) => source.fromDate.toISOString(),
+      },
+      toDate: {
+        type: new GraphQLNonNull(GraphQLString),
+        resolve: (source) => source.toDate.toISOString(),
+      },
       nameOfReserver: {type: new GraphQLNonNull(GraphQLString)},
       emailOfReserver: {type: new GraphQLNonNull(GraphQLString)},
       commentsOfReserver: {type: new GraphQLNonNull(GraphQLString)},
