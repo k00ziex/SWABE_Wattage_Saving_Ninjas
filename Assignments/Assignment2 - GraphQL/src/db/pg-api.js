@@ -42,7 +42,6 @@ const pgApiWrapper = async () => {
         },
         mutators: {
             
-          
         },
     };
 };

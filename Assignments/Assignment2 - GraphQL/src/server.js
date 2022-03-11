@@ -1,3 +1,5 @@
+// ADAPTED FROM POUL EJNAR DEMO - GRAPHQL MUTATIONS
+
 import { graphqlHTTP } from 'express-graphql';
 import { schema } from './schema';
 
@@ -21,7 +23,7 @@ async function main() {
 
   server.use('/graphql', (req, res) => {
     const loaders = {
-      users: new DataLoader((userIds) => pgApi.usersInfo(userIds)),
+      //users: new DataLoader((userIds) => pgApi.usersInfo(userIds)),
     };
     const mutators = {
       ...pgApi.mutators,
@@ -43,7 +45,7 @@ async function main() {
           ? errorReport
           : { message: 'Oops! Something went wrong! :(' };
       },
-    })(req, res);
+    })(req, res)
   });
 
   server.listen(config.port, () => {
