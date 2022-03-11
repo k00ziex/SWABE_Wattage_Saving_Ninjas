@@ -26,7 +26,7 @@ import {
       emailOfReserver: {type: new GraphQLNonNull(GraphQLString)},
       commentsOfReserver: {type: new GraphQLNonNull(GraphQLString)},
       discount: {type: new GraphQLNonNull(GraphQLBoolean)},
-      totalMoneySaved: {type: new GraphQLNonNull(GraphQLFloat)}
+      totalMoneySaved: {type: new GraphQLNonNull(GraphQLInt)}
     }
   });
 
