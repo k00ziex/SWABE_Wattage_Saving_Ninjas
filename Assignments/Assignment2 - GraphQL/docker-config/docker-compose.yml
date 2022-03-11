@@ -1,7 +1,7 @@
 version: 'latest'
 services:
   postgres:
-    container_name: postgresql-container
+    container_name: postgresql-container-1
     restart: always
     image: postgres
     expose:

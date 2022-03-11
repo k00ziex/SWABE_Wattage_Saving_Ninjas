@@ -12,3 +12,10 @@ CREATE TABLE Room
 	hasOwnTub BOOLEAN NOT NULL
 	
 );
+
+INSERT INTO 
+Room(uid, roomNumber, available, comment, floor, bedAmount, bedType, roomServiceAvailable, soundProof, hasOwnTub)
+VALUES
+('1', 420, TRUE, 'No dogs allowed', 'Ground Floor', 1, 'King', FALSE, TRUE, TRUE),
+('2', 421, FALSE, 'Dogs allowed', 'Second Floor', 2, 'Normal', TRUE, FALSE, FALSE),
+('3', 423, TRUE, 'Smoking Allowed', 'Basement', 4, 'King', TRUE, TRUE, TRUE);
