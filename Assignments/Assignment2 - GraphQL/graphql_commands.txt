@@ -1,4 +1,4 @@
-# CAN NOT DO BOTH QUERY AND MUTATION AT THE SAME TIME.
+# EACH ROOT (query, mutation, mutation) NEEDS TO BE RUN SEPARATELY -- Otherwise merge the requests -- Cannot merge queries and mutations
 
 query {
   helloWorld
@@ -31,4 +31,23 @@ mutation{
   {
       uid, roomNumber, floor, comment, bedType, bedAmount
   }
+}
+
+mutation{
+  roomModify
+  ( # Input to function 
+    input: {
+      uid:"666", roomNumber:6345566, available:true, comment: "Bring survival gear", 
+      floor: "666", bedAmount: 50, bedType: "Coffin", roomServiceAvailable: false, 
+      soundProof: true, hasOwnTub:true
+    }
+  ) 
+  # What to return
+  {
+      uid, roomNumber, floor, comment, bedType, bedAmount
+  }
+}
+
+mutation {
+  roomDelete(uid:"666")
 }

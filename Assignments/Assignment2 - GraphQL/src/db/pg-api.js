@@ -3,7 +3,7 @@ import Room from '../schema/types/room';
 import pgClient from './pg-client';
 
 //** To deal with the fact that roomNumber is roomnumber, etc, in the DB */
-const postgresFieldNames_to_roomFieldNames = `uid,  available, comment, floor,  hasowntub AS "hasOwnTub", roomnumber AS "roomNumber", 
+const POSTGRESFIELDNAMES_TO_ROOMFIELDNAMES = `uid,  available, comment, floor,  hasowntub AS "hasOwnTub", roomnumber AS "roomNumber", 
 bedamount AS "bedAmount", bedtype AS "bedType", roomserviceavailable AS "roomServiceAvailable", 
 soundproof AS "soundProof"`
 
@@ -16,7 +16,7 @@ const pgApiWrapper = async () => {
       queries: {
         roomMainList: async () => {
           const res = await pgQuery(`
-            SELECT  ${postgresFieldNames_to_roomFieldNames}
+            SELECT  ${POSTGRESFIELDNAMES_TO_ROOMFIELDNAMES}
             FROM rooms
             LIMIT 100
           `);
@@ -24,7 +24,7 @@ const pgApiWrapper = async () => {
         },
         roomFind: async (uid) => {
           const res = await pgQuery(`
-            SELECT ${postgresFieldNames_to_roomFieldNames}
+            SELECT ${POSTGRESFIELDNAMES_TO_ROOMFIELDNAMES}
             FROM rooms 
             WHERE uid like '${uid}'
           `);
@@ -45,7 +45,7 @@ const pgApiWrapper = async () => {
                 '${room.bedType}', ${room.roomServiceAvailable}, 
                 ${room.soundProof}, ${room.hasOwnTub}
               )
-              RETURNING ${postgresFieldNames_to_roomFieldNames}
+              RETURNING ${POSTGRESFIELDNAMES_TO_ROOMFIELDNAMES}
               ;
             `)
 
@@ -55,11 +55,45 @@ const pgApiWrapper = async () => {
             } else {
               return null; // Bad but could not get type with both errors and room to work.. 
             }
-          }
+          },
           // PATCH 
-          
+          roomModify: async(room) => {
+            const dbResponse = await pgQuery(`
+            UPDATE rooms
+            SET 
+                roomnumber = ${room.roomNumber},
+                available = ${room.available},
+                comment = '${room.comment}',
+                floor = '${room.floor}', 
+                bedamount = ${room.bedAmount},
+                bedtype = '${room.bedType}',
+                roomserviceavailable = ${room.roomServiceAvailable},
+                soundproof = ${room.soundProof},
+                hasowntub = ${room.hasOwnTub}
+            WHERE uid like '${room.uid}'
+            RETURNING ${POSTGRESFIELDNAMES_TO_ROOMFIELDNAMES}
+            `);
+            if(dbResponse.rowCount > 0) {
+              return dbResponse.rows[0];
+            } else {
+              throw new Error("Could not modify room");
+            }
+          },
           // DELETE
-
+          roomDelete: async(uid) => {
+            const dbResponse = await pgQuery(`
+            DELETE FROM 
+              rooms
+            WHERE
+              uid like '${uid}'
+            `)
+            
+            if(dbResponse.rowCount > 0){
+              return `Deleted room with uid: ${uid}`;
+            } else {
+              return `Could not delete room with uid: ${uid}`;
+            }
+          }
           //****************************/
       },
     };
