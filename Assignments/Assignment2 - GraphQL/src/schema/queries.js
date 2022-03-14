@@ -35,11 +35,11 @@ import res from 'express/lib/response';
       room: {
         type: Room,
         args: { 
-          uid: {type: new GraphQLNonNull(GraphQLInt)}
+          uid: {type: new GraphQLNonNull(GraphQLString)}
         },
-        resolve: async (source, {uid}, context) => {
+        resolve: async (source, {uid}, {pgApi}) => {
           // Get room from db
-
+          return await pgApi.roomFind(uid);
         }
       }
       //************ Room queries end */

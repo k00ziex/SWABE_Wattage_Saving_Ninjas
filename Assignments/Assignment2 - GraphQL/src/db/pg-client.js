@@ -1,3 +1,4 @@
+// Inspired by example from class
 import pg from 'pg';
 
 import { pgConnectionString } from '../config';

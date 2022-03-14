@@ -9,14 +9,14 @@ import Room from './room';
 
 const RoomPayload = new GraphQLObjectType({
     name: "RoomPayload",
-    fields: () => ({
+    fields: {
         errors: {
             type: new GraphQLNonNull(
                 new GraphQLList(new GraphQLNonNull(StdError))
             )
         },
-        room: {type: Room},
-    }),
+        room: {type: new GraphQLNonNull(Room)},
+    },
 })
 
 export default RoomPayload;
