@@ -1,0 +1,34 @@
+# CAN NOT DO BOTH QUERY AND MUTATION AT THE SAME TIME.
+
+query {
+  helloWorld
+  
+  roomMainList{
+    uid,
+    comment,
+  }
+  room(uid:"666"){
+    uid,
+    comment,
+    bedType,
+    bedAmount,
+    available,
+    hasOwnTub,
+  }
+  
+}
+
+mutation{
+  roomCreate
+  ( # Input to function 
+    input: {
+      uid:"666", roomNumber:666, available:true, comment: "Bring survival gear", 
+      floor: "666", bedAmount: 100, bedType: "Coffin", roomServiceAvailable: false, 
+      soundProof: true, hasOwnTub:true
+    }
+  ) 
+  # What to return
+  {
+      uid, roomNumber, floor, comment, bedType, bedAmount
+  }
+}

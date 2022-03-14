@@ -1,0 +1,2 @@
+Note that this assignment is based on demo 05e-custom-objects from class.
+Lecture: https://brightspace.au.dk/d2l/le/lessons/54765/lessons/890097
