@@ -1,11 +1,12 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLBoolean, GraphQLString } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
 import Room from './types/room';
 import RoomInput from './types/room-input';
+
 const MutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
     roomCreate: {
-      type: new GraphQLNonNull(Room), // Returns roompayload
+      type: new GraphQLNonNull(Room),
       args: {
         room: {type: new GraphQLNonNull(RoomInput)},
       },
@@ -14,7 +15,7 @@ const MutationType = new GraphQLObjectType({
       }
     },
     roomModify: {
-      type: new GraphQLNonNull(Room), // Returns roompayload
+      type: new GraphQLNonNull(Room), 
       args: {
         modifiedRoom: {type: new GraphQLNonNull(RoomInput)}
       },

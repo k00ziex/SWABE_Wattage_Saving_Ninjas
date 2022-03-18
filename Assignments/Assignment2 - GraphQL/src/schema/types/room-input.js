@@ -6,6 +6,7 @@ import {
     GraphQLInputObjectType,
   } from 'graphql';
   
+
 const RoomInput = new GraphQLInputObjectType({
     name: "RoomInput",
     fields: () => ({
@@ -22,4 +23,5 @@ const RoomInput = new GraphQLInputObjectType({
     })
   });
 
+  
   export default RoomInput

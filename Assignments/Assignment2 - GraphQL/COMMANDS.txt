@@ -21,8 +21,8 @@ query {
 mutation{
   roomCreate
   ( # Input to function 
-    input: {
-      uid:"666", roomNumber:666, available:true, comment: "Bring survival gear", 
+    room: {
+      uid:"4206969", roomNumber:662342346, available:true, comment: "Bring survival gear", 
       floor: "666", bedAmount: 100, bedType: "Coffin", roomServiceAvailable: false, 
       soundProof: true, hasOwnTub:true
     }
