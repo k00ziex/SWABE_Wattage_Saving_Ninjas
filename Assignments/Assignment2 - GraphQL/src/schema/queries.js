@@ -6,6 +6,7 @@ import {
     GraphQLList,
     GraphQLInt,
 } from 'graphql';
+import Reservation from './types/reservation';
 
 import Room from './types/room'
 
@@ -38,8 +39,17 @@ import Room from './types/room'
           // Get room from db
           return await queries.roomFind(uid);
         }
-      }
+      },
       //************ Room queries end */
+      //************ Reservation queries */
+      reservationMainList: {
+        type: new GraphQLList(new GraphQLNonNull(Reservation)),
+        resolve: async (source, args, {queries}) => {
+          return await queries.reservationMainList();
+        }
+      },
+      //******************************** */
+    
     },
   });
   

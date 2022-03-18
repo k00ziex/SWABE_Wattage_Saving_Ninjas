@@ -93,8 +93,17 @@ const pgApiWrapper = async () => {
             } else {
               return `Could not delete room with uid: ${uid}`;
             }
-          }
+          },
           //****************************/
+
+          //************ Reservations */
+          reservationMainList: async() => {
+            // TODO: Missing
+            const dbResponse = await pgQuery(`
+              
+            `);
+          }
+          //************************* */
       },
     };
 };
