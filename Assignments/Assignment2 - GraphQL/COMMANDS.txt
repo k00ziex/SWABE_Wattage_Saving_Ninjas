@@ -51,3 +51,19 @@ mutation{
 mutation {
   roomDelete(uid:"666")
 }
+
+
+
+
+query{
+  reservationMainList{
+    uid,
+    comments,
+    room{
+      uid,
+      roomNumber,
+      floor,
+      available
+    }
+  }
+}

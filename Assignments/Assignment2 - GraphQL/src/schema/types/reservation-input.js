@@ -4,6 +4,7 @@ import {
     GraphQLInputObjectType,
   } from 'graphql';
   
+import Room from './room';
 
 const ReservationInput = new GraphQLInputObjectType({
     name: "ReservationInput",

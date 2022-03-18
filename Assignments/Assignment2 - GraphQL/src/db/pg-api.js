@@ -7,6 +7,23 @@ const POSTGRESFIELDNAMES_TO_ROOMFIELDNAMES = `uid,  available, comment, floor,  
 bedamount AS "bedAmount", bedtype AS "bedType", roomserviceavailable AS "roomServiceAvailable", 
 soundproof AS "soundProof"`
 
+const POSTGRESFIELDNAMES_TO_RESERVATIONFIELDNAMES = `
+uid, comments, roomuid as "roomUID", fromdate AS "fromDate", todate AS "toDate",
+nameofreserver AS "nameOfReserver", emailofreserver AS "emailOfReserver"
+`
+
+const POSTGRES_RESERVATION_ROOM_JOIN =`
+res.uid, res.comments, res.roomuid as "roomUID", res.fromdate AS "fromDate", res.todate AS "toDate",
+res.nameofreserver AS "nameOfReserver", res.emailofreserver AS "emailOfReserver",
+
+room.uid AS "room_uid", room.roomnumber AS "room_roomNumber", room.available AS "room_available", 
+room.comment AS "room_comment", room.floor AS "room_floor", room.bedamount AS "room_bedAmount", 
+room.bedtype AS "room_bedType", room.roomserviceavailable AS "room_roomServiceAvailable", 
+room.soundproof AS "room_soundProof", room.hasowntub AS "room_hasOwnTub"
+ 
+
+`
+
 const pgApiWrapper = async () => {
     const { pgPool } = await pgClient();
     const pgQuery = (text, params = {}) =>
@@ -30,6 +47,21 @@ const pgApiWrapper = async () => {
           `);
           return res.rows[0]; // First room found
         },
+        //************ Reservations */
+        reservationMainList: async() => {
+          const dbResponse = await pgQuery(`
+          SELECT  
+            ${POSTGRES_RESERVATION_ROOM_JOIN}
+            FROM reservations res
+            JOIN rooms room ON (res.roomuid like room.uid)
+            LIMIT 100
+          `);
+          dbResponse.rows.forEach(element => {
+            console.log(element);
+          });
+          return dbResponse.rows;
+        }
+        //************************* */
       },
       mutators: {
           //** Rooms */
@@ -96,14 +128,6 @@ const pgApiWrapper = async () => {
           },
           //****************************/
 
-          //************ Reservations */
-          reservationMainList: async() => {
-            // TODO: Missing
-            const dbResponse = await pgQuery(`
-              
-            `);
-          }
-          //************************* */
       },
     };
 };
