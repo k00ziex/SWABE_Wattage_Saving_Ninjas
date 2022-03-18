@@ -60,6 +60,16 @@ const pgApiWrapper = async () => {
             console.log(element);
           });
           return dbResponse.rows;
+        },
+
+        reservationFind: async(uid) => {
+          const dbResponse = await pgQuery(`
+          SELECT ${POSTGRES_RESERVATION_ROOM_JOIN}
+          FROM reservations res 
+          JOIN rooms room ON (res.roomuid like room.uid)
+          WHERE res.uid like '${uid}'
+          `);
+          return dbResponse.rows[0];
         }
         //************************* */
       },

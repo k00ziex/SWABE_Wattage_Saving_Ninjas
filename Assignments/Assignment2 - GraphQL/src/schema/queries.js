@@ -48,6 +48,16 @@ import Room from './types/room'
           return await queries.reservationMainList();
         }
       },
+
+      reservation: {
+        type: Reservation,
+        args: {
+          uid: {type: new GraphQLNonNull(GraphQLString)}
+        },
+        resolve: async (source, {uid}, {queries}) => {
+          return await queries.reservationFind(uid);
+        }
+      }
       //******************************** */
     
     },
