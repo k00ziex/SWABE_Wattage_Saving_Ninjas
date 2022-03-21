@@ -22,8 +22,14 @@ const Reservation = new GraphQLObjectType({
                 return extractPrefixedColumns({prefixedObject: source, prefix: "room"});
             },
         },
-		fromDate: { type: new GraphQLNonNull(GraphQLString) },
-		toDate: { type: new GraphQLNonNull(GraphQLString) },
+		fromDate: { 
+			type: new GraphQLNonNull(GraphQLString),
+			resolve: ({ fromDate }) => fromDate.toISOString(),
+		 },	
+		toDate: { 
+			type: new GraphQLNonNull(GraphQLString),
+			resolve: ({ toDate }) => toDate.toISOString(),
+		},
 		nameOfReserver: { type: new GraphQLNonNull(GraphQLString) },
 		emailOfReserver: { type: new GraphQLNonNull(GraphQLString) },
 		comments: { type: new GraphQLNonNull(GraphQLString) },
