@@ -141,24 +141,33 @@ const pgApiWrapper = async () => {
           reservationCreate: async (reservation) => {
             console.log(reservation.room.uid)
             console.log(reservation.room.uid)
+            console.log(reservation.nameOfReserver)
             const pgResponse = await pgQuery(`
             INSERT INTO reservations (uid, roomuid, fromdate, todate, nameofreserver, emailofreserver, comments)
-            VALUES(
-              ${reservation.uid}, ${reservation.room.uid}, ${reservation.fromDate},
-              ${reservation.toDate}, 
-              ${reservation.nameOfReserver},
-              ${reservation.emailOfReserver}, 
-              ${reservation.comments}
+            VALUES
+            (
+              ${reservation.uid}, ${reservation.room.uid}, '${reservation.fromDate}',
+              '${reservation.toDate}', '${reservation.nameOfReserver}','${reservation.emailOfReserver}', '${reservation.comments}'
             )
+
             RETURNING ${POSTGRESFIELDNAMES_TO_RESERVATIONFIELDNAMES}
             ;
             `)
-
+            
             if(pgResponse.rowCount > 0) {
               return pgResponse.rows[0] 
             } else {
               return null; // Bad but could not get type with both errors and room to work.. 
             }
+            
+          },
+
+          reservationModify: async (reservation) => {
+            const pgResponse = await pgQuery(`
+            // DO STUFF
+            
+            
+            `)
           },
 
           reservationDelete: async(uid) => {
