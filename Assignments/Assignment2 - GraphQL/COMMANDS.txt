@@ -1,0 +1,69 @@
+# EACH ROOT (query, mutation, mutation) NEEDS TO BE RUN SEPARATELY -- Otherwise merge the requests -- Cannot merge queries and mutations
+
+query {
+  helloWorld
+  
+  roomMainList{
+    uid,
+    comment,
+  }
+  room(uid:"666"){
+    uid,
+    comment,
+    bedType,
+    bedAmount,
+    available,
+    hasOwnTub,
+  }
+  
+}
+
+mutation{
+  roomCreate
+  ( # Input to function 
+    room: {
+      uid:"4206969", roomNumber:662342346, available:true, comment: "Bring survival gear", 
+      floor: "666", bedAmount: 100, bedType: "Coffin", roomServiceAvailable: false, 
+      soundProof: true, hasOwnTub:true
+    }
+  ) 
+  # What to return
+  {
+      uid, roomNumber, floor, comment, bedType, bedAmount
+  }
+}
+
+mutation{
+  roomModify
+  ( # Input to function 
+    input: {
+      uid:"666", roomNumber:6345566, available:true, comment: "Bring survival gear", 
+      floor: "666", bedAmount: 50, bedType: "Coffin", roomServiceAvailable: false, 
+      soundProof: true, hasOwnTub:true
+    }
+  ) 
+  # What to return
+  {
+      uid, roomNumber, floor, comment, bedType, bedAmount
+  }
+}
+
+mutation {
+  roomDelete(uid:"666")
+}
+
+
+
+
+query{
+  reservationMainList{
+    uid,
+    comments,
+    room{
+      uid,
+      roomNumber,
+      floor,
+      available
+    }
+  }
+}

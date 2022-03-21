@@ -1,3 +1,4 @@
+// Plagiarized shamelessly from Poul Ejnar Demo. 
 import pg from 'pg';
 
 import { pgConnectionString } from '../config';

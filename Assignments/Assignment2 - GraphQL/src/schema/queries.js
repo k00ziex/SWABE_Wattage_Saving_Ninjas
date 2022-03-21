@@ -5,20 +5,18 @@ import {
     GraphQLNonNull,
     GraphQLList,
     GraphQLInt,
-  } from 'graphql';
-    
-  import Task from './types/task';
-  import SearchResultItem from './types/search-result-item';
-  import Room from './types/room'
-import res from 'express/lib/response';
+} from 'graphql';
+import Reservation from './types/reservation';
+
+import Room from './types/room'
 
   const QueryType = new GraphQLObjectType({
     name: 'Query',
     fields: {
       helloWorld: {
         type: GraphQLString,
-        resolve: async (source, args, {pgApi}) => {
-          let rows = await pgApi.roomMainList();
+        resolve: async (source, args, {queries}) => {
+          let rows = await queries.roomMainList();
           rows.forEach(element => {
             console.log(element);
           });
@@ -28,49 +26,40 @@ import res from 'express/lib/response';
       //************* Room queries */
       roomMainList: {
         type: new GraphQLList(new GraphQLNonNull(Room)),
-        resolve: async (source, args, {pgApi}) => {
-          return await pgApi.roomMainList();
+        resolve: async (source, args, {queries}) => {
+          return await queries.roomMainList();
         }
       },
       room: {
         type: Room,
         args: { 
-          uid: {type: new GraphQLNonNull(GraphQLInt)}
+          uid: {type: new GraphQLNonNull(GraphQLString)}
         },
-        resolve: async (source, {uid}, context) => {
+        resolve: async (source, {uid}, {queries}) => {
           // Get room from db
+          return await queries.roomFind(uid);
+        }
+      },
+      //************ Room queries end */
+      //************ Reservation queries */
+      reservationMainList: {
+        type: new GraphQLList(new GraphQLNonNull(Reservation)),
+        resolve: async (source, args, {queries}) => {
+          return await queries.reservationMainList();
+        }
+      },
 
+      reservation: {
+        type: Reservation,
+        args: {
+          uid: {type: new GraphQLNonNull(GraphQLString)}
+        },
+        resolve: async (source, {uid}, {queries}) => {
+          return await queries.reservationFind(uid);
         }
       }
-      //************ Room queries end */
-
-
-      // taskMainList: {
-      //   type: new GraphQLList(new GraphQLNonNull(Task)),
-      //   resolve: async (source, args, { loaders }) => {
-      //     return loaders.tasksByTypes.load('latest');
-      //   },
-      // },
-      // taskInfo: {
-      //   type: Task,
-      //   args: {
-      //     id: { type: new GraphQLNonNull(GraphQLID) },
-      //   },
-      //   resolve: async (source, args, { loaders }) => {
-      //     return loaders.tasks.load(args.id);
-      //   },
-      // },
-      // search: {
-      //   type: new GraphQLNonNull(
-      //     new GraphQLList(new GraphQLNonNull(SearchResultItem))
-      //   ),
-      //   args: {
-      //     term: { type: new GraphQLNonNull(GraphQLString) },
-      //   },
-      //   resolve: async (source, args, { loaders }) => {
-      //     return loaders.searchResults.load(args.term);
-      //   },
-      // },
+      //******************************** */
+    
     },
   });
   

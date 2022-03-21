@@ -1,35 +1,39 @@
-import { GraphQLObjectType, GraphQLNonNull } from 'graphql';
-
-import UserPayload from './types/payload-user';
-import UserInput from './types/input-user';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
 import Room from './types/room';
-import RoomPayload from './types/room-payload';
+import RoomInput from './types/room-input';
+
 const MutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
-    userCreate: {
-      type: new GraphQLNonNull(UserPayload),
+    roomCreate: {
+      type: new GraphQLNonNull(Room),
       args: {
-        input: { type: new GraphQLNonNull(UserInput) },
+        room: {type: new GraphQLNonNull(RoomInput)},
       },
-      resolve: async (source, { input }, { mutators }) => {
-        return mutators.userCreate({ input });
-      },
+      resolve: async (source, {room}, {mutators}) => {
+        return await mutators.roomCreate(room);
+      }
     },
-    // roomCreate: {
-    //   type: new GraphQLNonNull(RoomPayload), // Returns roompayload
-    //   args: {type: Room}, // takes room
-    //   resolve: async (source, {input}, context) => {
-        
-    //   }
-    // },
-    // roomModify: {
-    //   type: new GraphQLNonNull(RoomPayload), // Returns roompayload
-    //   args: {type: Room}, // takes room
-    //   resolve: async (source, {input}, context) => {
-      
-    //   }
-    // },
+    roomModify: {
+      type: new GraphQLNonNull(Room), 
+      args: {
+        modifiedRoom: {type: new GraphQLNonNull(RoomInput)}
+      },
+      resolve: async (source, {modifiedRoom}, {mutators}) => {
+        return await mutators.roomModify(modifiedRoom);
+      }
+    },
+    roomDelete: {
+      type: new GraphQLNonNull(GraphQLString),
+      args: {
+        uid: {
+          type: new GraphQLNonNull(GraphQLString)
+        }
+      },
+      resolve: async (source, {uid}, {mutators}) => {
+        return await mutators.roomDelete(uid);
+      }
+    }
   }),
 });
 

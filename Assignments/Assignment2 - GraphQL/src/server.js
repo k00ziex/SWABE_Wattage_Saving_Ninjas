@@ -1,4 +1,4 @@
-// ADAPTED FROM POUL EJNAR DEMO - GRAPHQL MUTATIONS
+// ADAPTED FROM POUL EJNAR DEMO - See PLAGIARISM.txt
 
 import { graphqlHTTP } from 'express-graphql';
 import { schema } from './schema';
@@ -10,7 +10,6 @@ import morgan from 'morgan';
 import * as config from './config';
 
 import pgApiWrapper from './db/pg-api';
-import DataLoader from 'dataloader';
 
 async function main() {
   const pgApi = await pgApiWrapper();
@@ -22,16 +21,16 @@ async function main() {
   server.use('/:fav.ico', (req, res) => res.sendStatus(204));
 
   server.use('/graphql', (req, res) => {
-    const loaders = {
-      //users: new DataLoader((userIds) => pgApi.usersInfo(userIds)),
-    };
     const mutators = {
       ...pgApi.mutators,
-      //...mongoApi.mutators,
+    };
+
+    const queries = {
+      ...pgApi.queries,
     };
     graphqlHTTP({
       schema,
-      context: { pgApi, loaders, mutators },
+      context: { pgApi, mutators, queries },
       graphiql: true,
       customFormatErrorFn: (err) => {
         const errorReport = {
