@@ -194,10 +194,19 @@ const pgApiWrapper = async () => {
 
           reservationModify: async (reservation) => {
             const pgResponse = await pgQuery(`
-            // DO STUFF
-            
-            
+            UPDATE reservations
+            SET 
+                roomuid = ${reservation.room.uid},
+                fromdate = '${reservation.fromDate}',
+                todate = '${reservation.toDate}',
+                nameofreserver = '${reservation.nameOfReserver}', 
+                emailofreserver = '${reservation.emailOfReserver}',
+                comments = '${reservation.comments}'
+            WHERE uid like '${reservation.uid}'
+            RETURNING ${POSTGRESFIELDNAMES_TO_RESERVATIONFIELDNAMES}
             `)
+
+            return pgResponse.rows[0]
           },
 
           reservationDelete: async(uid) => {

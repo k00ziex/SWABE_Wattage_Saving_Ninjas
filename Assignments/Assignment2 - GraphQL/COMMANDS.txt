@@ -39,12 +39,40 @@ mutation {
         hasOwnTub: false,
         soundProof: false
       },
-      
     }
   )
   # What to return
   {
-    uid
+    nameOfReserver,
+    emailOfReserver
+  }
+}
+
+mutation {
+  reservationModify(
+    modifiedReservation: {
+      uid: "5",
+      fromDate: "2022-01-01 12:00:00",
+      toDate: "2022-01-01 12:00:00",
+      emailOfReserver: "Luna@Lovegood.com",
+      nameOfReserver: "Luna Lovegood",
+      comments: "love",
+      room: {
+        uid: "2"
+        roomNumber: 421,
+        available:true,
+        comment: "Dogs allowed",
+        floor: "Second Floor",
+        bedAmount: 2,
+        bedType: "Normal"
+        roomServiceAvailable: true,
+        hasOwnTub: false,
+        soundProof: false
+      },
+    }
+  ){
+    nameOfReserver,
+    emailOfReserver
   }
 }
 
@@ -83,7 +111,7 @@ mutation {
 }
 
 mutation {
-  reservationDelete(uid:"666")
+  reservationDelete(uid:"5")
 }
 
 

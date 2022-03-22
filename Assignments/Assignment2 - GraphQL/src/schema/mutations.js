@@ -50,6 +50,16 @@ const MutationType = new GraphQLObjectType({
       }
     },
 
+    reservationModify: {
+      type: new GraphQLNonNull(Reservation),
+      args: {
+        modifiedReservation: {type: new GraphQLNonNull(ReservationInput)}
+      },
+      resolve: async (source, {modifiedReservation}, {mutators}) => {
+        return await mutators.reservationModify(modifiedReservation);
+      }
+    },
+
     reservationDelete: {
       type: new GraphQLNonNull(GraphQLString),
       args: {
