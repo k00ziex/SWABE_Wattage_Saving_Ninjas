@@ -155,6 +155,36 @@ const pgApiWrapper = async () => {
             `)
             
             if(pgResponse.rowCount > 0) {
+              // I would like personally to say sorry to whoever is reading this, im bad at javascript
+              // Set each room as no longer available
+              pgResponse.rows.forEach(async element => {
+                console.log(element)
+                // Find room
+                const res = await pgQuery(`
+                  SELECT ${POSTGRESFIELDNAMES_TO_ROOMFIELDNAMES}
+                  FROM rooms 
+                  WHERE uid like '${element.roomUID}'
+                `);
+
+                let room = res.rows[0]
+                room.available = false
+                // Set room
+
+                const dbResponse = await pgQuery(`
+                UPDATE rooms
+                SET 
+                    roomnumber = ${room.roomNumber},
+                    available = ${room.available},
+                    comment = '${room.comment}',
+                    floor = '${room.floor}', 
+                    bedamount = ${room.bedAmount},
+                    bedtype = '${room.bedType}',
+                    roomserviceavailable = ${room.roomServiceAvailable},
+                    soundproof = ${room.soundProof},
+                    hasowntub = ${room.hasOwnTub}
+                WHERE uid like '${room.uid}'
+                `);
+              });
               return pgResponse.rows[0] 
             } else {
               return null; // Bad but could not get type with both errors and room to work.. 
@@ -189,4 +219,5 @@ const pgApiWrapper = async () => {
       },
     };
 };
+
 export default pgApiWrapper;

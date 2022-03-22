@@ -18,6 +18,36 @@ query {
   
 }
 
+mutation {
+  reservationCreate(
+    reservation: {
+      uid: "5",
+      fromDate: "2022-01-01 12:00:00",
+      toDate: "2022-01-01 12:00:00",
+      emailOfReserver: "Joahn@John.com",
+      nameOfReserver: "John",
+      comments: "love",
+      room: {
+        uid: "2"
+        roomNumber: 421,
+        available:true,
+        comment: "Dogs allowed",
+        floor: "Second Floor",
+        bedAmount: 2,
+        bedType: "Normal"
+        roomServiceAvailable: true,
+        hasOwnTub: false,
+        soundProof: false
+      },
+      
+    }
+  )
+  # What to return
+  {
+    uid
+  }
+}
+
 mutation{
   roomCreate
   ( # Input to function 
@@ -50,6 +80,10 @@ mutation{
 
 mutation {
   roomDelete(uid:"666")
+}
+
+mutation {
+  reservationDelete(uid:"666")
 }
 
 
