@@ -1,4 +1,4 @@
-var amqp = require('amqplib/callback_api');
+import amqp from 'amqplib/callback_api.js';
 
 const conn_url = 'amqp://localhost';
 
@@ -14,9 +14,9 @@ amqp.connect(conn_url, function(error0, connection) {
         }
 
         ampq_channel = channel;
-        var queue = 'ReservationQueue';
-        var exchange_name = 'ReservationExchange';
-        var exchange_type = 'topic';
+        const queue = 'ReservationQueue';
+        const exchange_name = 'ReservationExchange';
+        const exchange_type = 'topic';
 
         channel.assertExchange(exchange_name, exchange_type, {
             durable: false
@@ -27,12 +27,14 @@ amqp.connect(conn_url, function(error0, connection) {
         });
 
         
+        
     });
 
 });
 
 export const publish_msg = async(exhange, key, data) => {
-    ampq_channel.publish(exhange, key, Buffer.from(data));
+    
+    ampq_channel.publish(exhange, key, Buffer.from(JSON.stringify(data)));
 }
 
 process.on('exit', (code) => {

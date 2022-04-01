@@ -1,11 +1,12 @@
-import reservation from './reservation-router'
-const express = require('express');
+import express from 'express';
+import bodyParser from 'body-parser';
+import {operations} from './reservation-router.js';
 
 const app = express();
 const port = 3000;
 
 app.use(bodyParser.json());
-app.use('/reservation', reservation);
+app.use('/reservation', operations);
 
 
 app.listen(port, () => {
