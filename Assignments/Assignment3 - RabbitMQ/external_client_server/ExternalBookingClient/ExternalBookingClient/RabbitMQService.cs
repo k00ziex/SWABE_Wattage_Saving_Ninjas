@@ -5,11 +5,13 @@ using RabbitMQ.Client;
 
 namespace ExternalBookingClient
 {
-    public class RabbitMQService : IRabbitMqService
+    public class RabbitMqService : IRabbitMqService
     {
         private IConnection _rabbitConnection;
+        private IModel _rabbitChannel;
+        private IBasicProperties _messageProperties;
 
-        public RabbitMQService()
+        public RabbitMqService()
         {
             InstantiateRabbitMq();
         }
@@ -22,30 +24,30 @@ namespace ExternalBookingClient
                 HostName = "localhost"
             };
             _rabbitConnection = factory.CreateConnection();
-            var channel = _rabbitConnection.CreateModel();
+
+            // Create a channel
+            _rabbitChannel = _rabbitConnection.CreateModel();
 
             // Ensure that the Exchange has been declared within RabbitMQ
-            channel.ExchangeDeclare("ReservationExchange", "topic");
+            _rabbitChannel.ExchangeDeclare("ReservationExchange", "topic");
+
+
+            // Set up the properties of the message
+            _messageProperties = _rabbitChannel.CreateBasicProperties();
+            _messageProperties.ContentType = "application/json";
+            _messageProperties.DeliveryMode = 2;
 
             //channel.QueueDeclare("ReservationQueue", true, false, false, null); // This should only be done in the consumer
         }
 
         public void SendBooking(BookingInput input, string topic, string exchange)
         {
-            // Create a channel to RabbitMQ
-            var channel = _rabbitConnection.CreateModel();
-
-            // Set up the properties of the message
-            var basicProperties = channel.CreateBasicProperties();
-            basicProperties.ContentType = "application/json";
-            basicProperties.DeliveryMode = 2;
-
             // Serialize the received input & convert it to a byte array
             var inputToJson = JsonSerializer.Serialize(input);
             var jsonModel = Encoding.UTF8.GetBytes(inputToJson);
 
             // Send the message
-            channel.BasicPublish(exchange, topic, basicProperties, jsonModel);
+            _rabbitChannel.BasicPublish(exchange, topic, _messageProperties, jsonModel);
         }
     }
 }

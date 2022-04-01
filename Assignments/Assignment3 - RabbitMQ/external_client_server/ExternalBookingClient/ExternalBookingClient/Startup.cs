@@ -25,7 +25,7 @@ namespace ExternalBookingClient
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExternalBookingClient", Version = "v1" });
             });
-            services.AddTransient<IRabbitMqService, RabbitMQService>();
+            services.AddSingleton<IRabbitMqService, RabbitMqService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -22,7 +22,7 @@ namespace ExternalBookingClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> BookHotelRoom(BookingInput inputModel)
+        public IActionResult BookHotelRoom(BookingInput inputModel)
         {
             var errorFromInputValidation = ValidateInput(inputModel);
 
@@ -38,17 +38,17 @@ namespace ExternalBookingClient.Controllers
             return Ok("Your booking has been sent for processing in our system. Please check your email for the confirmation of your booking.");
         }
 
-        private string ValidateInput(BookingInput input)
+        private static string ValidateInput(BookingInput input)
         {
             if (!DateTime.TryParseExact(input.CheckIn, Iso8601Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
             {
-                var errorMessage = $"{nameof(input.CheckIn)} must be a valid date in accordance with the ISO 8601 standard of 'yyyy-MM-ddTHH:mm:ss.ffffff'.";
+                var errorMessage = $"{nameof(input.CheckIn)} must be a valid date in accordance with the ISO 8601 standard of 'yyyy-MM-ddTHH:mm:ss.fffZ'.";
                 return errorMessage;
             }
 
             if (!DateTime.TryParseExact(input.CheckOut, Iso8601Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
             {
-                var errorMessage = $"{nameof(input.CheckOut)} must be a valid date in accordance with the ISO 8601 standard of 'yyyy-MM-ddTHH:mm:ss.ffffff'.";
+                var errorMessage = $"{nameof(input.CheckOut)} must be a valid date in accordance with the ISO 8601 standard of 'yyyy-MM-ddTHH:mm:ss.fffZ'.";
                 return errorMessage;
             }
 
