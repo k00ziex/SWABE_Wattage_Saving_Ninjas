@@ -24,18 +24,27 @@ namespace ExternalBookingClient.Controllers
         [HttpPost]
         public IActionResult BookHotelRoom(BookingInput inputModel)
         {
-            var errorFromInputValidation = ValidateInput(inputModel);
-
-            if (string.IsNullOrEmpty(errorFromInputValidation))
+            try
             {
-                _rabbitMqService.SendBooking(inputModel, "hotel.room.reservation.topic", "ReservationExchange");
-            }
-            else
-            {
-                return BadRequest(errorFromInputValidation);
-            }
+                var errorFromInputValidation = ValidateInput(inputModel);
 
-            return Ok("Your booking has been sent for processing in our system. Please check your email for the confirmation of your booking.");
+                if (string.IsNullOrEmpty(errorFromInputValidation))
+                {
+                    _rabbitMqService.SendBooking(inputModel, "hotel.room.reservation.topic", "ReservationExchange");
+                }
+                else
+                {
+                    return BadRequest(errorFromInputValidation);
+                }
+
+                return Ok("Your booking has been sent for processing in our system. Please check your email for the confirmation of your booking.");
+            } 
+            catch(Exception e)
+            {
+                _logger.LogError(e.Message);
+                return StatusCode(500,
+                    "A horrible error happened within our system! Please wait a while and try again. If the error persists, please contact customer support.");
+            }
         }
 
         private static string ValidateInput(BookingInput input)
