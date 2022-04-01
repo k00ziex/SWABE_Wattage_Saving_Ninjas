@@ -1,0 +1,1 @@
+C# or node server for handling the communication with a database, maybe mongo? for the persistance of reservations
