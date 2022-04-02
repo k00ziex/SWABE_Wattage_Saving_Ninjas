@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Reservation.Handler.RabbitMQ
 {
-    public class RabbitMqConsumerBackgroundService : BackgroundService
+    public class RabbitMQConsumerBackgroundService : BackgroundService
     {
         private readonly IReservationRepository _reservationRepository;
         private readonly ILogger _logger;
@@ -16,9 +16,9 @@ namespace Reservation.Handler.RabbitMQ
         private IConnection _connection;
         private IModel _channel;
 
-        public RabbitMqConsumerBackgroundService(IReservationRepository reservationRepository,
+        public RabbitMQConsumerBackgroundService(IReservationRepository reservationRepository,
             IMessageQueuePublisher messageQueuePublishService,
-            ILogger<RabbitMqConsumerBackgroundService> logger)
+            ILogger<RabbitMQConsumerBackgroundService> logger)
         {
             _reservationRepository = reservationRepository;
             _logger = logger;

@@ -18,8 +18,8 @@ builder.Services.AddDbContext<ReservationContext>(options =>
     options.UseSqlServer(@"Server=localhost;Database=reservationdatabase;User Id=sa;password=v({w6.@9B9;Trusted_Connection=False;MultipleActiveResultSets=true;");
 });
 builder.Services.AddTransient<IReservationRepository, ReservationRepository>();
-builder.Services.AddSingleton<IMessageQueuePublisher, RabbitMqPublishService>();
-builder.Services.AddHostedService<RabbitMqConsumerBackgroundService>();
+builder.Services.AddSingleton<IMessageQueuePublisher, RabbitMQPublishService>();
+builder.Services.AddHostedService<RabbitMQConsumerBackgroundService>();
 
 var app = builder.Build();
 
