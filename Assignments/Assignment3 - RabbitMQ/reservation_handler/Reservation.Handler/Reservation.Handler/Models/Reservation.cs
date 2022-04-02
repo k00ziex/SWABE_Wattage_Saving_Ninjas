@@ -2,9 +2,7 @@
 {
     public class Reservation
     {
-        public Reservation(){}
-
-        public int ReservationNumber { get; set; }
+        public int ReservationId { get; set; }
         public int HotelId { get; set; }
         public string CheckIn { get; set; }
         public string CheckOut { get; set; }

@@ -1,4 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
 using Reservation.Handler.DatabaseContext;
+using Reservation.Handler.RabbitMQ;
+using Reservation.Handler.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +13,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Depencies
-builder.Services.AddTransient<ReservationContext>();
+builder.Services.AddDbContext<ReservationContext>(options =>
+{
+    options.UseSqlServer(@"Server=localhost;Database=reservationdatabase;User Id=sa;password=v({w6.@9B9;Trusted_Connection=False;MultipleActiveResultSets=true;");
+});
+builder.Services.AddTransient<IReservationRepository, ReservationRepository>();
+builder.Services.AddSingleton<IMessageQueueService, RabbitMqService>();
+builder.Services.AddHostedService<ReservationReceiverService>();
 
 var app = builder.Build();
 
@@ -18,6 +28,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// Migrate db at startup
+using (var scope = app.Services.CreateScope())
+{
+    var reservationContext = scope.ServiceProvider.GetRequiredService<ReservationContext>();
+    reservationContext.Database.Migrate();
 }
 
 app.UseHttpsRedirection();
