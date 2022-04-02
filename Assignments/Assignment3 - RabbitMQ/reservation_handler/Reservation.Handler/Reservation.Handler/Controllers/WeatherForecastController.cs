@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Reservation.Handler.Models;
+using Reservation.Handler.RabbitMQ;
 
 namespace Reservation.Handler.Controllers
 {
@@ -12,10 +14,12 @@ namespace Reservation.Handler.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IMessageQueuePublisher _reservationPublisher;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMessageQueuePublisher reservationPublisher)
         {
             _logger = logger;
+            _reservationPublisher = reservationPublisher;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -28,6 +32,12 @@ namespace Reservation.Handler.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpPost]
+        public async Task SendRequest(Models.Reservation reservationDto)
+        {
+            _reservationPublisher.Publish(reservationDto, "test.a", "test");
         }
     }
 }

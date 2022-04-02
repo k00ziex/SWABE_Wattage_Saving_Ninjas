@@ -1,8 +1,13 @@
-﻿namespace Reservation.Handler.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Reservation.Handler.Models
 {
     public class Reservation
     {
-        public int ReservationId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string ReservationId { get; set; }
         public int HotelId { get; set; }
         public string CheckIn { get; set; }
         public string CheckOut { get; set; }

@@ -12,6 +12,7 @@ namespace Reservation.Handler.DatabaseContext
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // No configurations though XD
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ReservationContext).Assembly);
         }
     }

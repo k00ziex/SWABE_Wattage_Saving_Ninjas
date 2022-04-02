@@ -1,10 +1,11 @@
 ﻿using RabbitMQ.Client;
+using Reservation.Handler.Models;
 using System.Text;
 using System.Text.Json;
 
 namespace Reservation.Handler.RabbitMQ
 {
-    public class RabbitMqService : IMessageQueueService
+    public class RabbitMqService : IMessageQueuePublisher
     {
         private IConnection _rabbitConnection;
         private IModel _rabbitChannel;
@@ -12,10 +13,10 @@ namespace Reservation.Handler.RabbitMQ
 
         public RabbitMqService()
         {
-            InstantiateRabbitMq();
+            Init();
         }
 
-        public void InstantiateRabbitMq()
+        public void Init()
         {
             // Connect to the RabbitMQ instance
             var factory = new ConnectionFactory()
@@ -28,7 +29,7 @@ namespace Reservation.Handler.RabbitMQ
             _rabbitChannel = _rabbitConnection.CreateModel();
 
             // Ensure that the Exchange has been declared within RabbitMQ
-            _rabbitChannel.ExchangeDeclare("test", "topic", true);
+            _rabbitChannel.ExchangeDeclare("test", ExchangeType.Topic, true);
 
 
             // Set up the properties of the message
@@ -36,10 +37,9 @@ namespace Reservation.Handler.RabbitMQ
             _messageProperties.ContentType = "application/json";
             _messageProperties.DeliveryMode = 2;
 
-            //channel.QueueDeclare("ReservationQueue", true, false, false, null); // This should only be done in the consumer
         }
 
-        public void SendReservation(Models.Reservation reservation, string topic, string exchange)
+        public void Publish(Models.Reservation reservation, string topic, string exchange)
         {
             var inputToJson = JsonSerializer.Serialize(reservation);
             var jsonModel = Encoding.UTF8.GetBytes(inputToJson);

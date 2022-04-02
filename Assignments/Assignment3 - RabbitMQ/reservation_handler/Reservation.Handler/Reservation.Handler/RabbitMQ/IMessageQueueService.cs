@@ -1,7 +1,7 @@
 ﻿namespace Reservation.Handler.RabbitMQ
 {
-    public interface IMessageQueueService
+    public interface IMessageQueuePublisher
     {
-        void SendReservation(Models.Reservation reservation, string topic, string exchange);
+        void Publish(Models.Reservation reservation, string topic, string exchange);
     }
 }

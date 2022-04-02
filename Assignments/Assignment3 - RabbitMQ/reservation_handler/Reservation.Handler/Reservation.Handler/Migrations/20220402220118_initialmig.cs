@@ -12,8 +12,7 @@ namespace Reservation.Handler.Migrations
                 name: "Reservations",
                 columns: table => new
                 {
-                    ReservationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReservationId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     HotelId = table.Column<int>(type: "int", nullable: false),
                     CheckIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CheckOut = table.Column<string>(type: "nvarchar(max)", nullable: true),

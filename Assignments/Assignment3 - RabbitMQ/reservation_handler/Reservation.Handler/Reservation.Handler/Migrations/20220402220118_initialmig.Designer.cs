@@ -11,7 +11,7 @@ using Reservation.Handler.DatabaseContext;
 namespace Reservation.Handler.Migrations
 {
     [DbContext(typeof(ReservationContext))]
-    [Migration("20220402192859_initialmig")]
+    [Migration("20220402220118_initialmig")]
     partial class initialmig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,11 +25,8 @@ namespace Reservation.Handler.Migrations
 
             modelBuilder.Entity("Reservation.Handler.Models.Reservation", b =>
                 {
-                    b.Property<int>("ReservationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationId"), 1L, 1);
+                    b.Property<string>("ReservationId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CheckIn")
                         .HasColumnType("nvarchar(max)");

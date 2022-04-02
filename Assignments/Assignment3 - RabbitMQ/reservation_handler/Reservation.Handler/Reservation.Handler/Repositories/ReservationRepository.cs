@@ -25,6 +25,7 @@ namespace Reservation.Handler.Repositories
 
 
             var reservationInput = new Models.Reservation() {
+                ReservationId = Guid.NewGuid().ToString(),
                 HotelId = source.HotelId,
                 CheckIn = source.CheckIn,
                 CheckOut = source.CheckOut,

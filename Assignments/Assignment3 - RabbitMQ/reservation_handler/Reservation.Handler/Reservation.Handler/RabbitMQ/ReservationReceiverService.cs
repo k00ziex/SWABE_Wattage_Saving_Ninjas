@@ -12,14 +12,17 @@ namespace Reservation.Handler.RabbitMQ
     {
         private readonly IReservationRepository _reservationRepository;
         private readonly ILogger _logger;
+        private readonly IMessageQueuePublisher _messageQueuePublishService;
         private IConnection _connection;
         private IModel _channel;
 
-        public ReservationReceiverService(IReservationRepository reservationRepository, 
+        public ReservationReceiverService(IReservationRepository reservationRepository,
+            IMessageQueuePublisher messageQueuePublishService,
             ILogger<ReservationReceiverService> logger)
         {
             _reservationRepository = reservationRepository;
             _logger = logger;
+            _messageQueuePublishService = messageQueuePublishService;
 
             Init();
         }
@@ -36,7 +39,7 @@ namespace Reservation.Handler.RabbitMQ
             // create channel  
             _channel = _connection.CreateModel();
 
-            _channel.ExchangeDeclare("test", "topic", true);
+            _channel.ExchangeDeclare("test", ExchangeType.Topic, true);
             _channel.QueueDeclare("test.queue.log", false, false, false, null);
             _channel.QueueBind("test.queue.log", "test", "test.*", null);
             _channel.BasicQos(0, 1, false);
@@ -46,10 +49,11 @@ namespace Reservation.Handler.RabbitMQ
         {
             var dbReservation = await _reservationRepository.Insert(reservation);
 
-
+            if (dbReservation is Models.Reservation)
+                _messageQueuePublishService.Publish(dbReservation, "testtopic", "testexchange");
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
 
@@ -69,12 +73,13 @@ namespace Reservation.Handler.RabbitMQ
                     _logger.LogInformation("Could not convert {content} to ReservationDto object - Got the following error message {error}", content, e.Message);
                 }
 
-                // handle the received message  
-                _logger.LogInformation(content);
+                // Ack  
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 
             _channel.BasicConsume("test.queue.log", false, consumer);
+
+            return Task.CompletedTask;
         }
     }
 }
