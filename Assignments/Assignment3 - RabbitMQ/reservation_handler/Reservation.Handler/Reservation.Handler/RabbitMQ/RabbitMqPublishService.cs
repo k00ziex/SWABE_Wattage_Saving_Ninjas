@@ -5,13 +5,13 @@ using System.Text.Json;
 
 namespace Reservation.Handler.RabbitMQ
 {
-    public class RabbitMqService : IMessageQueuePublisher
+    public class RabbitMqPublishService : IMessageQueuePublisher
     {
         private IConnection _rabbitConnection;
         private IModel _rabbitChannel;
         private IBasicProperties _messageProperties;
 
-        public RabbitMqService()
+        public RabbitMqPublishService()
         {
             Init();
         }
