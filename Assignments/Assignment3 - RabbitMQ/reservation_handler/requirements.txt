@@ -1,0 +1,1 @@
+This application runs .net 6, please install before running the application
