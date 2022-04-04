@@ -50,7 +50,7 @@ namespace Reservation.Handler.RabbitMQ
             var dbReservation = await _reservationRepository.Insert(reservation);
 
             if (dbReservation is Models.Reservation)
-                _messageQueuePublishService.Publish(dbReservation, Constants.Reservation_Received_Topic, Constants.Reservation_Received_Exchange_Name);
+                _messageQueuePublishService.Publish(dbReservation, Constants.Confirmation_Topic, Constants.Confirmation_Exchange_Name);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
