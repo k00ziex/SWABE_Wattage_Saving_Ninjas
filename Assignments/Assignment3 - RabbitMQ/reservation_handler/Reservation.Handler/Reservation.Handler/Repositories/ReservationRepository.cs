@@ -31,12 +31,12 @@ namespace Reservation.Handler.Repositories
             // First check if room reservation exist
             var reservationExist = await _context.Reservations
                 .Where(x => x.HotelId == source.HotelId && x.RoomNo == source.RoomNo)
-                .Where(x => x.CheckIn > checkInDateTime && x.CheckIn < checkOutDateTime)
-                .Where(x => x.CheckOut > checkOutDateTime && x.CheckOut < checkInDateTime)
+                .Where(x => x.CheckIn < checkInDateTime && checkInDateTime < x.CheckOut)
+                .Where(x => x.CheckIn < checkOutDateTime && checkOutDateTime < x.CheckOut)
                 .FirstOrDefaultAsync();
 
             if (reservationExist != null)
-                throw new ArgumentOutOfRangeException("Reservation in that timeframe for Hotel id: {Hotelid} and room numbeer: {roomNo} already exists", source.HotelId.ToString(), source.RoomNo.ToString());
+                throw new ArgumentOutOfRangeException($"Reservation in that timeframe for Hotel id: {source.HotelId} and room numbeer: {source.RoomNo} already exists");
 
             var reservationInput = new Models.Reservation() {
                 ReservationId = Guid.NewGuid().ToString(),
