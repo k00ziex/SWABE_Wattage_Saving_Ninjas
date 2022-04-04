@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 // Depencies
 builder.Services.AddDbContext<ReservationContext>(options =>
 {
-    options.UseSqlServer(@"Server=localhost;Database=reservationdatabase;User Id=sa;password=v({w6.@9B9;Trusted_Connection=False;MultipleActiveResultSets=true;");
+    options.UseSqlServer(@"Server=localhost:4200;Database=reservationdatabase;User Id=sa;password=v({w6.@9B9;Trusted_Connection=False;MultipleActiveResultSets=true;");
 });
 builder.Services.AddTransient<IReservationRepository, ReservationRepository>();
 builder.Services.AddSingleton<IMessageQueuePublisher, RabbitMQPublishService>();
