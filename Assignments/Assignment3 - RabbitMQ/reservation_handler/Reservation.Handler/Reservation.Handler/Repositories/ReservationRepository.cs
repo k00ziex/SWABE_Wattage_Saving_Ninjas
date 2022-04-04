@@ -23,8 +23,9 @@ namespace Reservation.Handler.Repositories
             if(source is null)
                 throw new ArgumentNullException(nameof(source));
 
-            var checkInDateTime = DateTime.Parse(source.CheckIn);
-            var checkOutDateTime = DateTime.Parse(source.CheckOut);
+            //  ISO 8601 conversation
+            var checkInDateTime = DateTime.Parse(source.CheckIn, null, System.Globalization.DateTimeStyles.RoundtripKind); 
+            var checkOutDateTime = DateTime.Parse(source.CheckOut, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
             var reservationInput = new Models.Reservation() {
                 ReservationId = Guid.NewGuid().ToString(),
