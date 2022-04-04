@@ -29,8 +29,7 @@ namespace Reservation.Handler.RabbitMQ
             _rabbitChannel = _rabbitConnection.CreateModel();
 
             // Ensure that the Exchange has been declared within RabbitMQ
-            _rabbitChannel.ExchangeDeclare("test", ExchangeType.Topic, true);
-
+            _rabbitChannel.ExchangeDeclare(Constants.Reservation_Received_Exchange_Name, ExchangeType.Topic, true);
 
             // Set up the properties of the message
             _messageProperties = _rabbitChannel.CreateBasicProperties();

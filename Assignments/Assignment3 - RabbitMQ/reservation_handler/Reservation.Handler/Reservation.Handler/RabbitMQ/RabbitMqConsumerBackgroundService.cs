@@ -39,9 +39,9 @@ namespace Reservation.Handler.RabbitMQ
             // create channel  
             _channel = _connection.CreateModel();
 
-            _channel.ExchangeDeclare("test", ExchangeType.Topic, true);
-            _channel.QueueDeclare("test.queue.log", false, false, false, null);
-            _channel.QueueBind("test.queue.log", "test", "test.*", null);
+            _channel.ExchangeDeclare(Constants.Hotel_Room_Exchange_Name, ExchangeType.Topic, true);
+            _channel.QueueDeclare(Constants.Hotel_Room_Queue, false, false, false, null);
+            _channel.QueueBind(Constants.Hotel_Room_Queue, Constants.Hotel_Room_Exchange_Name, "*", null);
             _channel.BasicQos(0, 1, false);
         }
 
@@ -50,7 +50,7 @@ namespace Reservation.Handler.RabbitMQ
             var dbReservation = await _reservationRepository.Insert(reservation);
 
             if (dbReservation is Models.Reservation)
-                _messageQueuePublishService.Publish(dbReservation, "testtopic", "testexchange");
+                _messageQueuePublishService.Publish(dbReservation, Constants.Reservation_Received_Topic, Constants.Reservation_Received_Exchange_Name);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -77,7 +77,7 @@ namespace Reservation.Handler.RabbitMQ
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 
-            _channel.BasicConsume("test.queue.log", false, consumer);
+            _channel.BasicConsume(Constants.Hotel_Room_Queue, false, consumer);
 
             return Task.CompletedTask;
         }
