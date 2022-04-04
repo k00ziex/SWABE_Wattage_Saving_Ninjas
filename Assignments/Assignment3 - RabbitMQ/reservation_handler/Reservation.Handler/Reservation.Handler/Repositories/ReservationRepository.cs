@@ -13,10 +13,23 @@ namespace Reservation.Handler.Repositories
             _context = factory.CreateScope().ServiceProvider.GetRequiredService<ReservationContext>();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(string id)
         {
             _context.Remove(id);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Models.Reservation> FindById(string id)
+        {
+            if(id is null)
+                throw new ArgumentNullException(nameof(id));
+
+            var reservation = await _context.Reservations.FindAsync(id);
+
+            if (reservation is null)
+                return null;
+
+            return reservation;
         }
 
         public async Task<Models.Reservation> Insert(ReservationDto source)
