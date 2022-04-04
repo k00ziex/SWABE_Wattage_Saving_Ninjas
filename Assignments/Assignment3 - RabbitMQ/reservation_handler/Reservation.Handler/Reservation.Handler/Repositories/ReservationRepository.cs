@@ -23,12 +23,14 @@ namespace Reservation.Handler.Repositories
             if(source is null)
                 throw new ArgumentNullException(nameof(source));
 
+            var checkInDateTime = DateTime.Parse(source.CheckIn);
+            var checkOutDateTime = DateTime.Parse(source.CheckOut);
 
             var reservationInput = new Models.Reservation() {
                 ReservationId = Guid.NewGuid().ToString(),
                 HotelId = source.HotelId,
-                CheckIn = source.CheckIn,
-                CheckOut = source.CheckOut,
+                CheckIn = checkInDateTime,
+                CheckOut = checkOutDateTime,
                 RoomNo = source.RoomNo,
                 CustomerName = source.CustomerName,
                 CustomerEmail = source.CustomerEmail,
