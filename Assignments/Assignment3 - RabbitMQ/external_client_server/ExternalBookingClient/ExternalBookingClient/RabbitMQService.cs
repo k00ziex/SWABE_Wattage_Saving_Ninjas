@@ -29,7 +29,7 @@ namespace ExternalBookingClient
             _rabbitChannel = _rabbitConnection.CreateModel();
 
             // Ensure that the Exchange has been declared within RabbitMQ
-            _rabbitChannel.ExchangeDeclare("ReservationExchange", "topic");
+            //_rabbitChannel.ExchangeDeclare("ReservationExchange", "topic", true);
 
 
             // Set up the properties of the message
