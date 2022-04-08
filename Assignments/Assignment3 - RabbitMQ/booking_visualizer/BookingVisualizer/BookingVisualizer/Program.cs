@@ -38,9 +38,7 @@ namespace BookingVisualizer
                     {
                         var body = eventArgs.Body.ToArray();
                         var message = Encoding.UTF8.GetString(body);
-                        Console.WriteLine("Received Message:\n" + message);
                         var reservation = JsonSerializer.Deserialize<Models.Reservation>(message);
-                        Console.WriteLine($"Reservation received:\n{JsonSerializer.Serialize(reservation)}");
 
                         // Email 
                         await emailSender.SendEmail(reservation);
