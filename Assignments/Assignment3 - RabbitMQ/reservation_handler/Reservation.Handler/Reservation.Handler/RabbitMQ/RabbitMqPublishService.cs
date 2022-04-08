@@ -1,22 +1,22 @@
-﻿using System.Text;
+﻿using RabbitMQ.Client;
+using Reservation.Handler.Models;
+using System.Text;
 using System.Text.Json;
-using ExternalBookingClient.Models;
-using RabbitMQ.Client;
 
-namespace ExternalBookingClient
+namespace Reservation.Handler.RabbitMQ
 {
-    public class RabbitMqService : IRabbitMqService
+    public class RabbitMQPublishService : IMessageQueuePublisher
     {
         private IConnection _rabbitConnection;
         private IModel _rabbitChannel;
         private IBasicProperties _messageProperties;
 
-        public RabbitMqService()
+        public RabbitMQPublishService()
         {
-            InstantiateRabbitMq();
+            Init();
         }
 
-        public void InstantiateRabbitMq()
+        public void Init()
         {
             // Connect to the RabbitMQ instance
             var factory = new ConnectionFactory()
@@ -29,25 +29,20 @@ namespace ExternalBookingClient
             _rabbitChannel = _rabbitConnection.CreateModel();
 
             // Ensure that the Exchange has been declared within RabbitMQ
-            //_rabbitChannel.ExchangeDeclare("ReservationExchange", "topic", true);
-
+            _rabbitChannel.ExchangeDeclare(Constants.Confirmation_Exchange_Name, ExchangeType.Topic, true);
 
             // Set up the properties of the message
             _messageProperties = _rabbitChannel.CreateBasicProperties();
             _messageProperties.ContentType = "application/json";
             _messageProperties.DeliveryMode = 2;
-            _messageProperties.Persistent = true;
 
-            //channel.QueueDeclare("ReservationQueue", true, false, false, null); // This should only be done in the consumer
         }
 
-        public void SendBooking(BookingInput input, string topic, string exchange)
+        public void Publish(Models.Reservation reservation, string topic, string exchange)
         {
-            // Serialize the received input & convert it to a byte array
-            var inputToJson = JsonSerializer.Serialize(input);
+            var inputToJson = JsonSerializer.Serialize(reservation);
             var jsonModel = Encoding.UTF8.GetBytes(inputToJson);
 
-            // Send the message
             _rabbitChannel.BasicPublish(exchange, topic, _messageProperties, jsonModel);
         }
     }
