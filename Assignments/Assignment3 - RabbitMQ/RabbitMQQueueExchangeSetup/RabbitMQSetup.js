@@ -12,11 +12,11 @@ amqp.connect("amqp://localhost", function (error0, connection) {
         console.log("Created Channel");
 		const reservation_exchange = "ReservationExchange";
         const reservation_queue = "ReservationQueue";
-        const reservation_queue_routingkey = "hotel.room.reservation.topic";
+        const reservation_queue_routingkey = "hotel.room.reservation";
 
         const confirmation_exchange = "ConfirmationExchange";
         const confirmation_queue = "ConfirmationQueue";
-        const confirmation_queue_routingkey = "hotel.room.confirmation.topic";
+        const confirmation_queue_routingkey = "hotel.room.confirmation";
 
         const exchange_type_topic = "topic";
         
