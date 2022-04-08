@@ -14,10 +14,7 @@ namespace BookingVisualizer
             Console.WriteLine("Booking Visualizer Started.");
 
             const string hostName = "localhost";
-            const string exchangeName = "ConfirmationExchange";
-            const string exchangeType = "topic";
             const string queueName = "ConfirmationQueue";
-            const string routingKey = "hotel.room.confirmation.topic"; // TODO
 
             var emailSender = new EmailSenderDummy();
 
@@ -26,9 +23,6 @@ namespace BookingVisualizer
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                //channel.ExchangeDeclare(exchangeName, exchangeType); // Producer creates exchange, consumer creates queue. 
-                channel.QueueDeclare(queueName, true, false, false);
-                channel.QueueBind(queueName, exchangeName, routingKey);
                 channel.BasicQos(0,1, false); // 0 is prefetch window size, 1 is amount of messages prefetched, false is "global setting"
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += async (model, eventArgs) =>
