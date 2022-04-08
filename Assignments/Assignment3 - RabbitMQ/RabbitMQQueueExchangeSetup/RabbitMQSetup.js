@@ -45,6 +45,6 @@ amqp.connect("amqp://localhost", function (error0, connection) {
         channel.bindQueue(confirmation_queue, confirmation_exchange, confirmation_queue_routingkey);
         channel.bindQueue(reservation_queue, reservation_exchange, reservation_queue_routingkey)
         console.log("Done");
-        process.exit(0);
+        //process.exit(0);
 	});
 });
