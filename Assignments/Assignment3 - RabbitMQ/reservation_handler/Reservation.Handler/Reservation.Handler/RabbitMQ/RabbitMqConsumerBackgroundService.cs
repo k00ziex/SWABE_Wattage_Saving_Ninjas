@@ -40,9 +40,9 @@ namespace Reservation.Handler.RabbitMQ
             _channel = _connection.CreateModel();
 
             //_channel.ExchangeDeclare(Constants.Hotel_Room_Exchange_Name, ExchangeType.Topic, true);
-            _channel.QueueDeclare(Constants.Hotel_Room_Queue, false, false, false, null);
-            _channel.QueueBind(Constants.Hotel_Room_Queue, Constants.Hotel_Room_Exchange_Name, Constants.Hotel_Room_Topic, null);
-            _channel.BasicQos(0, 1, false);
+            //_channel.QueueDeclare(Constants.Hotel_Room_Queue, false, false, false, null);
+            //_channel.QueueBind(Constants.Hotel_Room_Queue, Constants.Hotel_Room_Exchange_Name, Constants.Hotel_Room_Topic, null);
+            //_channel.BasicQos(0, 1, false);
         }
 
         private async Task HandleReservation(ReservationDto reservation)

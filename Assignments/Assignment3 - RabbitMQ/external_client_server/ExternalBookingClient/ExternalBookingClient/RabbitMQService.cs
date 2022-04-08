@@ -36,6 +36,7 @@ namespace ExternalBookingClient
             _messageProperties = _rabbitChannel.CreateBasicProperties();
             _messageProperties.ContentType = "application/json";
             _messageProperties.DeliveryMode = 2;
+            _messageProperties.Persistent = true;
 
             //channel.QueueDeclare("ReservationQueue", true, false, false, null); // This should only be done in the consumer
         }
