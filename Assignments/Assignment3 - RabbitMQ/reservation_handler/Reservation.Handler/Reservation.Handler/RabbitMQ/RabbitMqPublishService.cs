@@ -29,8 +29,9 @@ namespace Reservation.Handler.RabbitMQ
             _rabbitChannel = _rabbitConnection.CreateModel();
 
             // Ensure that the Exchange has been declared within RabbitMQ
-            _rabbitChannel.ExchangeDeclare(Constants.Confirmation_Exchange_Name, ExchangeType.Topic, true);
-
+            //_rabbitChannel.ExchangeDeclare(Constants.Confirmation_Exchange_Name, ExchangeType.Topic, true);
+            
+            //_rabbitChannel.ExchangeDeclarePassive(Constants.Confirmation_Exchange_Name);
             // Set up the properties of the message
             _messageProperties = _rabbitChannel.CreateBasicProperties();
             _messageProperties.ContentType = "application/json";
