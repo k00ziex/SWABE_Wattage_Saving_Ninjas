@@ -14,17 +14,17 @@ amqp.connect(conn_url, function(error0, connection) {
         }
 
         ampq_channel = channel;
-        const queue = 'ReservationQueue';
-        const exchange_name = 'ReservationExchange';
-        const exchange_type = 'topic';
+        // const queue = 'ReservationQueue';
+        // const exchange_name = 'ReservationExchange';
+        // const exchange_type = 'topic';
 
-        channel.assertExchange(exchange_name, exchange_type, {
-            durable: false
-        });
+        // channel.assertExchange(exchange_name, exchange_type, {
+        //     durable: false
+        // });
 
-        channel.assertQueue(queue,{
-            durable: false
-        });
+        // channel.assertQueue(queue,{
+        //     durable: false
+        // });
 
         
         
@@ -34,7 +34,9 @@ amqp.connect(conn_url, function(error0, connection) {
 
 export const publish_msg = async(exhange, key, data) => {
     
-    ampq_channel.publish(exhange, key, Buffer.from(JSON.stringify(data)));
+    ampq_channel.publish(exhange, key, Buffer.from(JSON.stringify(data)), {
+        persistent: true
+    });
 }
 
 process.on('exit', (code) => {

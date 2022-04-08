@@ -8,7 +8,7 @@ namespace Models
         {
         }
 
-        public int ReservationNumber { get; set; }
+        public string? ReservationId { get; set; }
         public int HotelId { get; set; }
         public string? CheckIn { get; set; }
         public string? CheckOut { get; set; }
