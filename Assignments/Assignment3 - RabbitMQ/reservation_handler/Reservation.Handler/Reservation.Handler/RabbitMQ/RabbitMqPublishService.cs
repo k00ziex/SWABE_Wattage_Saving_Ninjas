@@ -39,12 +39,12 @@ namespace Reservation.Handler.RabbitMQ
 
         }
 
-        public void Publish(Models.Reservation reservation, string topic, string exchange)
+        public void Publish(Models.Reservation reservation, string routingKey, string exchange)
         {
             var inputToJson = JsonSerializer.Serialize(reservation);
             var jsonModel = Encoding.UTF8.GetBytes(inputToJson);
 
-            _rabbitChannel.BasicPublish(exchange, topic, _messageProperties, jsonModel);
+            _rabbitChannel.BasicPublish(exchange, routingKey, _messageProperties, jsonModel);
         }
     }
 }
